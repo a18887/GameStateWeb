@@ -7,7 +7,7 @@
     border-radius: 1%; 
   }
 
-  .login{  
+  .login, .register{  
     margin: auto;
     width: 50%;
     border: 3px solid rgb(255, 255, 255);
@@ -20,6 +20,16 @@
     font-size: 16px;
     line-height: 24px;
     background-color: white;
+}
+
+.errmsg {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    color: red;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
 }
 
 input[type="submit"] {
@@ -37,20 +47,7 @@ input[type="submit"] {
     font-weight: 600;
 }
 
-input[type="text"] {
-    border-radius: 8px;
-    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
-    border: 1px solid #98A2B3;
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 300;
-    font-size: 14px;
-    line-height: 24px;
-    padding: 5px 12px;
-    color: #000000;
-}
-
-input[type="password"] {
+input[type="text"], input[type="password"], input[type="email"] {
     border-radius: 8px;
     box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
     border: 1px solid #98A2B3;
@@ -92,13 +89,12 @@ label{
 span{  
     color: white;  
     font-size: 17px;  
-}  
-a{  
-    float: center;  
 }
+
 a {
     color: gold;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .logo {
@@ -131,6 +127,7 @@ a {
     flex-direction: column;
     width: 50%;
     margin: auto;
+    margin-top: 30px;
 }
 
 .newgamestate{
@@ -139,7 +136,6 @@ a {
 }
 
 .forgetp {
-    color: unset;
     font-weight: 600;
     font-size: 10px;
     color: #000000;
