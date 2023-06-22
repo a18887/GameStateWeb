@@ -1,0 +1,24 @@
+.editbuttonforgotpass{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.forgotpass{  
+    margin: auto;
+    width: 50%;
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 15px; 
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    text-align: center;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    background-color: white;
+    padding-bottom: 20px;
+}

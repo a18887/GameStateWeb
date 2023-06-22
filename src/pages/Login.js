@@ -8,7 +8,6 @@ export default function Login() {
     const errRef = useRef();
     const [username,setusername] = useState('');
     const[password,setpassword] = useState('');
-    const [loginauto,setloginauto] = useState(false);
     const [errMsg,setErrMsg] = useState('');
     const navigate = useNavigate();
 
@@ -21,6 +20,11 @@ export default function Login() {
 
    const handleSubmitlogin = async (e) => {
     e.preventDefault();
+    if (!username || !password) {
+        setErrMsg("Fill in all fields");
+        return;
+      }
+    setErrMsg('');
     console.log(username,password);
     const url = 'http://localhost:3000/user/login'; // Update with your API endpoint URL
   
@@ -29,11 +33,23 @@ export default function Login() {
         headers: {
         'Content-Type': 'application/json',
         },
-        body: JSON.stringify(username,password),
+        body:JSON.stringify({
+            username,
+            password
+          }),
     })
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
+            if(data.status === 200)
+            {
+                localStorage.setItem("user",data);
+                navigate('/homepage')
+                setErrMsg('');
+            }
+            else{
+                setErrMsg(data.message);
+            }
         // Handle additional logic based on the response
         })
         .catch((error) => console.error(error));
@@ -41,42 +57,24 @@ export default function Login() {
         setpassword('');
     }
 
-      
-        //localStorage.setItem("user",data);
-       // navigate('/userDetails');
-      // setloginauto(true);
-       // if(loginauto==true)
-        //{
-       //   localStorage.setItem("token",data.data);
-       // }
-        
-       
-   // }) 
-  
+    const registerpage = () =>{
+        navigate('/signup');
+    }
 
-   
-  //const handleSubmitforgot = async (e) => {
-    //navigate('/forgotpass');
-  //}
-  //function moveforward() {
-   //navigate('/signup');
-  //}
-
- // function historyback()
-  //{
-  //  navigate("/");
-  //}
+    const forgotpasswordpage = () =>{
+        navigate('/forgotpassword');
+    }
 
   return (
     <>   
     <div className="App">
-      <p ref={errRef} className={errMsg?"errmsg":"offscreen"} aria-live="assertive">{errMsg}</p>
       <div className="App-main">
         <div className='firstdiv'>
             <img src={img} alt="Logo GameState" className='logo'></img>
             <p >Login to access a lot of game reviews and get to make your OWN!</p>
         </div>
         <div className="login">
+            <p ref={errRef} className={errMsg?"errmsg":"offscreen"} aria-live="assertive">{errMsg}</p>
             <form  onSubmit={handleSubmitlogin}>
                 <div className='edittext'>
                     <label><b>Username</b></label>   
@@ -87,11 +85,11 @@ export default function Login() {
                     <input type="password" name="password" id="password" placeholder="Password" autocomplete="off"  onChange={(e)=>setpassword(e.target.value)} value={password}/>
                 </div>
                 <div className='newgamestate'>
-                    <p className="forgetp">Forgot your password? Reset it <a href="/api/register">here</a></p>
+                    <p className="forgetp">Forgot your password? Reset it <a onClick={forgotpasswordpage}>here</a></p>
                 </div>
                 <div className='editbutton'>
                     <input type="submit" name="log" id="log" value="Login" />   
-                    <p className='registerbutton'>New to GameState? <a href="/api/register">Click here</a></p>
+                    <p className='registerbutton'>New to GameState? <a onClick={registerpage}>Click here</a></p>
                 </div>
             </form>
         </div>
