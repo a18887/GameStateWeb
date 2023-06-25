@@ -78,6 +78,9 @@ export default function Game() {
         <Header>
 
         </Header>
+        <div className='Appprinicipal'>
+
+       
         <div className="col-lg-3">
             <div class="img-container">
                 <div className='positioning'>
@@ -174,7 +177,7 @@ export default function Game() {
                 </div>
             </div>
         </div>
-                 
+        </div>
         </div>
     </>
   );

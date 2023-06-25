@@ -4,6 +4,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 1%; 
+    width: 2050px;
   }
 
   .login, .register{  
@@ -107,8 +108,9 @@ a {
     cursor: pointer;
 }
 
-.App{
+.Appprinicipal{
     width: 2050px;
+    margin: auto;
 }
 .logo {
     display: block;

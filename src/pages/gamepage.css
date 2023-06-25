@@ -228,6 +228,9 @@ a.login:hover, a.logout:hover {
 
 @media (max-device-width: 828px)
 {
+    .App{
+        width: 2050px;
+    }
     .imagebackground{
         display: none;
     }
