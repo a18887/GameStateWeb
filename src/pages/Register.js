@@ -44,34 +44,39 @@ export default function Register() {
       setError("Please enter a valid email");
       return;
     }
-    const url = "http://localhost:3000/user/register";
 
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-        email,
-        country: country ? country : undefined,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === 203) {
-          setError(data.message);
-          setUsername("");
-          setPassword("");
-          setEmail("");
-          setCountry("");
-        } else {
-          setError(null);
-          navigate("/");
-        }
-      })
-      .catch((error) => console.error(error));
+    const xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:3000/user/register", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
+            const data = JSON.parse(xhr.responseText);
+            if (xhr.status === 201) {
+                console.log(data)
+                if (data.status === 203) {
+                  setError(data.message);
+                  setUsername("");
+                  setPassword("");
+                  setEmail("");
+                  setCountry("");
+                } else {
+                  setError(null);
+                  navigate("/");
+                }
+            } else {
+                console.error("Request failed. Status:", xhr.status);
+            }
+        };
+        xhr.onerror = () => {
+            console.error("Request failed. Network error.");
+        };
+        const jsonData = {
+          username,
+          password,
+          email,
+          country: country ? country : undefined,
+        };     
+        const payload = JSON.stringify(jsonData);
+        xhr.send(payload);
   };
 
   return (

@@ -23,42 +23,43 @@ export default function Forgotpassword() {
       }
 
    const handleSubmitforgotpassword = async (e) => {
-    e.preventDefault();
-    if (!email ) {
-        setErrMsg("Fill in all fields");
-        return;
-      }
-    if (!isValidEmail(email)) {
-        setErrMsg("Please enter a valid email");
-        return;
-    }
-    setErrMsg('');
-    console.log(email);
-    const url = 'http://localhost:3000/user/forgotpwd'; // Update with your API endpoint URL
-  
-    fetch(url, {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-        body:JSON.stringify({
+        e.preventDefault();
+        if (!email ) {
+            setErrMsg("Fill in all fields");
+            return;
+        }
+        if (!isValidEmail(email)) {
+            setErrMsg("Please enter a valid email");
+            return;
+        }
+        setErrMsg('');
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:3000/user/forgotpwd", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
+            const data = JSON.parse(xhr.responseText);
+            if (xhr.status === 201) {
+                console.log(data)
+                if (data.status == 200){
+                    document.getElementById('error').style.color = "black";
+                    setErrMsg(data.message);
+                }
+                else{
+                setErrMsg(data.message);
+                }
+            
+            } else {
+                console.error("Request failed. Status:", xhr.status);
+            }
+        };
+        xhr.onerror = () => {
+            console.error("Request failed. Network error.");
+        };
+        const jsonData = {
             email
-          }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            if(data.status === 200)
-            {
-                document.getElementById('error').style.color = "black";
-                setErrMsg(data.message);
-            }
-            else{
-                setErrMsg(data.message);
-            }
-        // Handle additional logic based on the response
-        })
-        .catch((error) => console.error(error));
+        };     
+        const payload = JSON.stringify(jsonData);
+        xhr.send(payload);
         setemail('');
     }
 

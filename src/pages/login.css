@@ -4,6 +4,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 1%; 
+    width: 2050px;
   }
 
   .login, .register{  
@@ -107,6 +108,10 @@ a {
     cursor: pointer;
 }
 
+.Appprinicipal{
+    width: 2050px;
+    margin: auto;
+}
 .logo {
     display: block;
     margin: auto;
@@ -114,13 +119,12 @@ a {
 }
 
 .firstdiv{
-    margin-top:40px;
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
     line-height: 24px;
-    margin-bottom:40px;
+    margin: auto;
 }
 
 .edittext{
