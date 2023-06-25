@@ -1,0 +1,156 @@
+.App-main {
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 1%; 
+  }
+
+  .login, .register{  
+    margin: auto;
+    width: 50%;
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 15px; 
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    text-align: center;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    background-color: white;
+}
+
+.errmsg {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    color: red;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+input[type="submit"] {
+    background-color: gold;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    border: 0px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    padding: 5px 20px;
+    color: #000000;
+    font-weight: 600;
+}
+
+
+.errmsg {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    color: red;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+input[type="password"], input[type="text"], input[type="email"]  {
+    border-radius: 8px;
+    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+    border: 1px solid #98A2B3;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 24px;
+    padding: 5px 12px;
+    color: #000000;
+}
+
+
+p {
+    display: block;
+    margin: 1em auto;
+    text-align: center;
+    color: #6A6A6A;
+    padding-bottom: 10px;
+}
+
+.registerbutton{
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 24px;
+    color: #000000;
+    padding-top: 20px;
+}
+
+label{  
+    color: #000000;  
+    font-size: 17px;
+    display: inline-block;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    text-align: left;
+}  
+
+span{  
+    color: white;  
+    font-size: 17px;  
+}
+
+a {
+    color: gold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.App{
+    width: 2050px;
+}
+.logo {
+    display: block;
+    margin: auto;
+    padding: 10px 0;
+}
+
+.firstdiv{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    margin: auto;
+}
+
+.edittext{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    padding-top: 30px;
+}
+
+
+.editbutton{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    margin-top: 30px;
+}
+
+.newgamestate{
+    width: 50%;
+    margin: auto;
+}
+
+.forgetp {
+    font-weight: 600;
+    font-size: 10px;
+    color: #000000;
+    text-align: left;
+    line-height: 24px;
+}
