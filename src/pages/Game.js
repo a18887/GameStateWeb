@@ -17,7 +17,6 @@ export default function Game() {
     const [imagegamebackground,setimagegamebackground] = useState('');
     const [description,setdescription] = useState('');
     const [platforms,setplatforms] = useState('');
-    const id=3498;
     const navigate = useNavigate();
     
     function removeHTMLTags(text) {
@@ -39,6 +38,8 @@ export default function Game() {
     }
 
     useEffect(()=>  {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
         console.log(id);
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "http://localhost:3000/game/searchbyid", true);
@@ -69,18 +70,14 @@ export default function Game() {
           
         const payload = JSON.stringify(jsonData);
         xhr.send(payload);
-    },[]);
+    });
  
 
   return (
     <>   
     <div className="App">
-        <Header>
-
-        </Header>
+        <Header></Header>
         <div className='Appprinicipal'>
-
-       
         <div className="col-lg-3">
             <div class="img-container">
                 <div className='positioning'>

@@ -1,12 +1,13 @@
-import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
+import React, { useEffect } from "react";
+import { styled } from "@mui/material/styles";
+import { List, ListItem, ListItemText } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 
 import pfp from "./../img/user.png";
@@ -17,7 +18,6 @@ const Search = styled("div")(({ theme }) => ({
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: "100%",
-  maxWidth: "800px",
   [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(3),
     width: "auto",
@@ -38,7 +38,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "white",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -53,50 +52,80 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const SearchResultList = styled(List)(({ theme }) => ({
+  position: "absolute",
+  top: "100%",
+  left: 0,
+  zIndex: 9999,
+  width: "100%",
+  borderRadius: theme.shape.borderRadius + 5,
+  background: "#24292F",
+  boxShadow: theme.shadows[5],
+  marginTop: theme.spacing(1),
+}));
+
+const SearchResultItemText = styled(ListItemText)(({ theme }) => ({
+  color: "black",
+}));
+
 export default function PrimarySearchAppBar() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [searchValue, setSearchValue] = React.useState("");
+  const [searchResults, setSearchResults] = React.useState([]);
+  const [searchResultsID, setSearchResultsID] = React.useState([]);
+  const navigate = useNavigate();
 
-  const isMenuOpen = Boolean(anchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
+  const handleListItemClick = (id) => {
+    navigate(`/gamepage?id=${id}`);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
+  useEffect(() => {
+    const fetchData = () => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:3000/game/search", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onload = () => {
+        if (xhr.status === 201) {
+          const responseData = JSON.parse(xhr.responseText);
+          const responseArray = responseData.game;
+          const responseArrayID = responseData.id;
+          if (responseArray == "Game not found") {
+            setSearchResults(["No Results..."]);
+            setSearchResultsID([0]);
+          } else {
+            setSearchResults(responseArray.slice(0, 5));
+            setSearchResultsID(responseArrayID.slice(0, 5));
+          }
+        } else {
+          console.error("Request failed. Status:", xhr.status);
+        }
+      };
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+      xhr.onerror = () => {
+        console.error("Request failed. Network error.");
+      };
 
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
+      const jsonData = {
+        name: searchValue,
+      };
+
+      const payload = JSON.stringify(jsonData);
+      xhr.send(payload);
+    };
+
+    const delayTimer = setTimeout(() => {
+      if (searchValue !== "") {
+        fetchData();
+      } else {
+        setSearchResults([]);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayTimer);
+  }, [searchValue]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -108,7 +137,6 @@ export default function PrimarySearchAppBar() {
             width="40"
             height="40"
             style={{ borderRadius: "50%", marginRight: "10px" }}
-            onClick={handleProfileMenuOpen}
           ></img>
           <Typography
             variant="h9"
@@ -125,15 +153,41 @@ export default function PrimarySearchAppBar() {
             <StyledInputBase
               placeholder="Search for a game..."
               inputProps={{ "aria-label": "search" }}
+              onChange={handleSearchChange}
             />
+            {searchValue && (
+              <SearchResultList>
+                {searchResults.map((result, index) => (
+                  <ListItem key={searchResultsID[index]}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <Button
+                        onClick={() => {
+                          if (searchResultsID[index] !== 0) {
+                            handleListItemClick(searchResultsID[index]);
+                          }
+                        }}
+                        style={{ textTransform: "none" }}
+                      >
+                        <SearchResultItemText primary={result} />
+                      </Button>
+                    </div>
+                  </ListItem>
+                ))}
+              </SearchResultList>
+            )}
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <a style={{ color: "white" }}>Logout</a>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <a style={{ color: "white", marginLeft: "16px" }}>Logout</a>
           </Box>
         </Toolbar>
       </AppBar>
-      {renderMenu}
     </Box>
   );
 }
