@@ -31,6 +31,7 @@ a.login:hover, a.logout:hover {
 
 .firstdivgame{
     display: flex;
+    flex-direction: row;
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 400;
@@ -62,7 +63,7 @@ a.login:hover, a.logout:hover {
 
 .seconddiv{
     max-width: 1060px;
-    margin-left: 20rem;
+    margin-left: 15rem;
 }
 
 .img-container {
@@ -81,16 +82,17 @@ a.login:hover, a.logout:hover {
 
 .positioning{
     position: absolute;
-    margin-left: 790px;
+    margin-left: 700px;
     margin-top: 240px;
     padding: 4px;   
+    z-index: 1;
 }
 
 .positionimggame{
     position: absolute;
     left: 160px;
     bottom: -140px;
-
+    z-index: 1;
 }
 
 .texttitle
@@ -142,8 +144,12 @@ a.login:hover, a.logout:hover {
 }
 
 .gameimgback{
-    width: 2050px;
+    min-width: 2050px;
     object-fit: cover;
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    border: 3px solid black;
+  
 }
 
 
@@ -224,18 +230,64 @@ a.login:hover, a.logout:hover {
     margin-top: 1rem;
 }
 
-
-@media (max-device-width: 828px)
+@media only screen and  (max-width: 1350px)
 {
-    .App{
-        width: 2050px;
-    }
-    .imagebackground{
-        display: none;
-    }
     .firstdivgame{
         flex-direction: column;
      
+    }
+    .seconddiv{
+        margin-left: 0;
+        max-width: 100%;
+        margin-right: 2rem;
+        margin-left: 2rem;
+    }
+    .reviewbutton{
+        margin: auto;
+        width: 50%;
+    }
+    .rectangles{
+        width: 100%;
+    }
+    .rectanglecomments{
+        width: 100%;
+    }
+  
+    .graph{
+        margin: auto;
+        align-items: center;
+    }
+ 
+    .positioning{
+        position: relative;
+        margin-left:0;
+        margin-top: 0px;
+        z-index: 1;
+        text-align: center;
+    }
+    .img-container{
+        display: block;
+    }
+    .imagebackground{
+        position: absolute;
+        left:0;
+        bottom: 0;
+        right: 0;
+        top: 0px;
+    }
+    .divgame{
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        margin-left: 0;
+    }
+    .positionimggame{
+        position:relative;
+        z-index: 1;
+        left: 0;
+        bottom: 0;
+    }
+    .imagebackground{
+        display: none;
     }
     .h2title{
         color: #000000;
@@ -248,52 +300,22 @@ a.login:hover, a.logout:hover {
         color: black;
     }
     .texttitle1{
-        color: #000000;
-        
+        color: #000000;   
     }
-    .positionimggame{
-        position: relative;
-        left:0;
-        bottom: 0;
-      
-    }
-    .reviewbutton{
-        margin: auto;
-        width: 50%;
-    }
-    .rectangles{
-        width: 100%;
-    }
-    .rectanglecomments{
-        width: 100%;
-    }
-    .seconddiv{
-        margin-left: 0;
-        max-width: 100%;
-        margin-right: 2rem;
-        margin-left: 2rem;
-    }
-    .graph{
-        margin: auto;
-        align-items: center;
-    }
+    
     .buttonsclass{
         width: 50%;
     }
-    .divgame{
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-        margin-left: 0;
-    }
-    .positioning{
-        position: relative;
-        margin-left:0;
-        margin-top: 10px;
-        text-align: center;
-    }
-    .img-container{
-        display: block;
-    }
+   
+}
+
+@media only screen and  (max-width: 1000px)
+{
+    
+   
+  
+   
+    
 }
 
 .platforms {

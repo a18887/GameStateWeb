@@ -4,7 +4,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 1%; 
-    width: 2050px;
+
   }
 
   .login, .register{  
@@ -109,7 +109,7 @@ a {
 }
 
 .Appprinicipal{
-    width: 2050px;
+    max-width: 2050px;
     margin: auto;
 }
 .logo {

@@ -57,7 +57,14 @@ export default function Game() {
         );
         setplatforms(platforms);
         setimagegame(data.message.image);
-        setimagegamebackground(data.message.imageadd);
+        if(data.message.imageadd!=null)
+        {
+            setimagegamebackground(data.message.imageadd);
+        }
+        else{
+            setimagegamebackground(data.message.image);
+        }
+       
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -75,7 +82,6 @@ export default function Game() {
 
   return (
     <>
-      <div className="App">
         <Header></Header>
         <div className="Appprinicipal">
           <div className="col-lg-3">
@@ -302,7 +308,6 @@ export default function Game() {
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 }
