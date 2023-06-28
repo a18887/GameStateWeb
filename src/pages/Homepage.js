@@ -79,7 +79,7 @@ export default function Homepage() {
   return (
     <>
       <Header></Header>
-      <div className='Appprinicipal'>
+      <div className="Appprinicipal">
         <div className={styles.popular}>
           <h1>Popular Games</h1>
           {popularImages.map((image, index) => (
