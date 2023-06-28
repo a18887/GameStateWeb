@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Forgotpass from "./pages/ForgotPassword";
 import Game from "./pages/Game";
+import Topico from "./pages/Topic";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <Route path="/forgotpassword" element={<Forgotpass />} />
       <Route path="/homepage" element={<Homepage />} />
       <Route path="/gamepage" element={<Game/>} />
+      <Route path="/topicpage" element={<Topico/>} />
     </Routes>
   );
 }

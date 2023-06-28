@@ -38,6 +38,7 @@ export default function Login() {
               console.log(data)
               if (data.status == 200){
                 localStorage.setItem("user",data);
+                localStorage.setItem("username",username);
                 navigate('/homepage')
                 setErrMsg('');
               }
