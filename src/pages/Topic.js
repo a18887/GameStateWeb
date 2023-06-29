@@ -17,6 +17,9 @@ export default function Topico() {
   const [topictitle, settopictitle] = useState("");
   const [like, setlike] = useState("");
   const [dislike, setdislike] = useState("");
+  const username = localStorage.getItem('username');
+  var likedislike = 0;
+  const [usernameLD,setusernameLD] = useState("");
   const [usernametopic, setusernametopic] = useState("");
   const [text, settext] = useState("");
   const [commenttext, setcommenttext] = useState([]);
@@ -29,8 +32,9 @@ export default function Topico() {
   const [timedata,settimedata] = useState("");
   const navigate = useNavigate();
   const topic_id = "649c164f3f46c9ce0b95d05d";
-  function forumpage() {
-    navigate("/forumpage");
+
+  function gamepage() {
+    navigate(`/gamepage?id=${searchParams.get("id")}`);
   }
 
   useEffect(() => {
@@ -41,7 +45,6 @@ export default function Topico() {
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
-        console.log(data);
         setnamegame(data.message.name);
         setdata(data.message.release_date);
         setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
@@ -112,8 +115,6 @@ export default function Topico() {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/topic/searchbytopicid", true);
     xhr.setRequestHeader("Content-Type", "application/json");
- 
-   
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
@@ -143,7 +144,13 @@ export default function Topico() {
               year: date.getFullYear()
             };
             setcommentdate(prevArray => [...prevArray, formattedDate]);
-           }        
+           }   
+    
+           for(let i = 0;i<data.message.topics.likeDislike.length;i++){
+            if (data.message.topics.likeDislike[i].username == username) {
+              setusernameLD(username);
+           }
+          }
         }
         setlike(data.message.topics.likes);
         setdislike(data.message.topics.dislikes);
@@ -163,8 +170,6 @@ export default function Topico() {
     const payload = JSON.stringify(jsonData);
     xhr.send(payload);
   },[topic_id]);
-
-
 
   for (let i = 0; i < commenttext.length; i++) {
     divisions.push(
@@ -205,14 +210,64 @@ export default function Topico() {
     xhr.send(payload);
   }
 
-  function likefunction()
-  {
+  useEffect(()=>{
+    if(like == 0 && dislike == 0)
+    {
+      likedislike = 0;
+    }
+    else{
+      likedislike = 1;
+    }
+    likedislikefunc();
+  },[like,dislike])
+
+
+  function likefunction(){
     setlike((prevLike) => (prevLike + 1) % 2);
+    setdislike(0); 
+  }
+
+  
+  const likedislikefunc = () => 
+  {
+    const likes = like;
+    const dislikes = dislike;
+    const likeDislike = likedislike;
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:3000/topic/likedislike", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => {
+      if (xhr.status === 201) {
+        const data = JSON.parse(xhr.responseText);
+        console.log(data);  
+        
+  
+      } else {
+        console.error("Request failed. Status:", xhr.status);
+      }
+    };
+    xhr.onerror = () => {
+      console.error("Request failed. Network error.");
+    };
+    const jsonData = {
+      topic_id,
+      likes,
+      dislikes,
+      likeDislike,
+      username,
+      usernameLD 
+    };
+
+    const payload = JSON.stringify(jsonData);
+    xhr.send(payload);
+
   }
 
   function dislikefunction()
   {
     setdislike((prevLike) => (prevLike + 1) % 2);
+    setlike(0);
+
   }
 
   return (
@@ -236,7 +291,7 @@ export default function Topico() {
           <div className="App-main">
                <div className='topicdivgame'>
                     <div className='gamepagebutton'>
-                        <input type="submit" className="buttonsclasstopic"  name="log" id="log" value="GAME PAGE" />
+                        <input type="submit" className="buttonsclasstopic"  onClick={gamepage} name="log" id="log" value="GAME PAGE" />
                     </div>
                 </div>
                 <div className='seconddivtopic'>
