@@ -10,7 +10,6 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 
-
 import pfp from "./../img/user.png";
 
 const Search = styled("div")(({ theme }) => ({
@@ -137,7 +136,12 @@ export default function PrimarySearchAppBar() {
             alt="profile picture"
             width="40"
             height="40"
-            style={{ borderRadius: "50%", marginRight: "10px" }}
+            style={{
+              borderRadius: "50%",
+              marginRight: "10px",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/profilepage")}
           ></img>
           <Typography
             variant="h9"
