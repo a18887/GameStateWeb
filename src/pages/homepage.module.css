@@ -67,6 +67,7 @@ body {
     max-width: 500px;
     margin-left: 10px;
     text-align: left;
+    cursor: pointer;
 }
 
 .date {
