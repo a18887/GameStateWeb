@@ -17,7 +17,7 @@ export default function Topico() {
   const [topictitle, settopictitle] = useState("");
   const [like, setlike] = useState("");
   const [dislike, setdislike] = useState("");
-  const username = localStorage.getItem('username');
+  const username = localStorage.getItem('user');
   var likedislike = 0;
   const [usernameLD,setusernameLD] = useState("");
   const [usernametopic, setusernametopic] = useState("");
@@ -170,6 +170,8 @@ export default function Topico() {
     const payload = JSON.stringify(jsonData);
     xhr.send(payload);
   },[topic_id]);
+
+
 
   for (let i = 0; i < commenttext.length; i++) {
     divisions.push(

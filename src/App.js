@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Forgotpass from "./pages/ForgotPassword";
 import Game from "./pages/Game";
 import Topico from "./pages/Topic";
+import Profil from "./pages/Profil";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Route path="/homepage" element={<Homepage />} />
       <Route path="/gamepage" element={<Game/>} />
       <Route path="/topicpage" element={<Topico/>} />
+      <Route path="/profilpage" element={<Profil/>} />
     </Routes>
   );
 }

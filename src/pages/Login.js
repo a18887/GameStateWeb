@@ -37,8 +37,8 @@ export default function Login() {
           if (xhr.status === 201) {
               console.log(data)
               if (data.status == 200){
-                localStorage.setItem("user",data);
-                localStorage.setItem("username",username);
+                localStorage.setItem("id", data.id);
+                localStorage.setItem("user",username);
                 navigate('/homepage')
                 setErrMsg('');
               }
