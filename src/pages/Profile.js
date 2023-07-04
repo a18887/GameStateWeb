@@ -280,6 +280,9 @@ export default function Profil() {
                         src={lastreview.image}
                         alt="game"
                         id={styles.subscribedGames}
+                        onClick={() =>
+                          navigate(`/gamepage?id=${lastreview.forum_id}`)
+                        }
                       />
                     </div>
                   </div>
@@ -308,6 +311,11 @@ export default function Profil() {
                         src={lasttopicimage}
                         alt="game"
                         id={styles.subscribedGames}
+                        onClick={() =>
+                          navigate(
+                            `/topicpage/${lasttopic._id}?game_id=${lasttopic.forum_id}`
+                          )
+                        }
                       />
                     </div>
                   </div>
@@ -332,7 +340,14 @@ export default function Profil() {
                 {subscribedImages.map((image, index) => (
                   <Grid xs={12} sm={6} key={subscribedID[index]}>
                     <div className={styles.frameGameImage}>
-                      <img src={image} alt="game" id={styles.subscribedGames} />
+                      <img
+                        src={image}
+                        alt="game"
+                        id={styles.subscribedGames}
+                        onClick={() =>
+                          navigate(`/gamepage?id=${subscribedID[index]}`)
+                        }
+                      />
                       <img
                         src={statusIcon(subscribedStatus[index])}
                         alt="game"
@@ -357,6 +372,9 @@ export default function Profil() {
                         src={review.image}
                         alt="game"
                         id={styles.subscribedGames}
+                        onClick={() =>
+                          navigate(`/gamepage?id=${review.forum_id}`)
+                        }
                       />
                     </div>
 
@@ -413,6 +431,9 @@ export default function Profil() {
                         src={topicImages[index]}
                         alt="game"
                         id={styles.subscribedGames}
+                        onClick={() =>
+                          navigate(`/gamepage?id=${topic.forum_id}`)
+                        }
                       />
                     </div>
                   </Grid>

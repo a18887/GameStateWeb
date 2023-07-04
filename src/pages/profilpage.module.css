@@ -123,6 +123,7 @@ h5{
     width: 90px;
     height:90px;
     z-index: 1;
+    cursor: pointer;
 }
 
 #statusIcon {
