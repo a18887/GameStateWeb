@@ -7,7 +7,9 @@ import Game from "./pages/Game";
 import Library from "./pages/Library";
 import CreateTopic from "./pages/CreateTopic";
 import Topic from "./pages/Topic";
-import Profile from "./pages/Profil";
+import Profile from "./pages/Profile";
+import AddGame from "./pages/Addgame";
+import Forum from "./pages/Forum";
 
 export default function App() {
   return (
@@ -22,6 +24,8 @@ export default function App() {
       <Route path="/gamepage" element={<Game />} />
       <Route path="/topicpage" element={<Topic />} />
       <Route path="/profilepage" element={<Profile />} />
+      <Route path="/reviewgame" element={<AddGame />} />
+      <Route path="/forum" element={<Forum />} />
     </Routes>
   );
 }

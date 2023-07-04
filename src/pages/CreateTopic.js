@@ -68,6 +68,7 @@ export default function CreateTopic() {
           ref={errRef}
           className={errMsg ? "errmsg" : "offscreen"}
           aria-live="assertive"
+          style={{ marginBottom: "10px" }}
         >
           {errMsg}
         </p>
@@ -114,14 +115,14 @@ export default function CreateTopic() {
       <div className="Appprinicipal">
         <div className="col-lg-3">
           <div class="img-container">
-            <div className="positioning">
+            <div className="positionimgtopic">
               <h1 className="h2title">{gameName}</h1>
               <p className="texttitle">
                 Released on <span className="textdata">{releaseDate} </span> by{" "}
                 <span className="texttitle1">{developer} </span>
               </p>
             </div>
-            <div className="positionimggame">
+            <div className="imggametopic">
               <img
                 src={image}
                 className="imggame"
@@ -132,10 +133,10 @@ export default function CreateTopic() {
             </div>
             <div className="imagebackground">
               <img
-                alt="Background"
                 src={backgroundImage}
                 height="550px"
                 className="gameimgback"
+                alt="background"
               ></img>
             </div>
           </div>
@@ -163,7 +164,11 @@ export default function CreateTopic() {
               ></textarea>
             </div>
             <div id="submit">
-              <input type="submit" value="Create Topic"></input>
+              <input
+                type="submit"
+                id="createTopicButton"
+                value="Create Topic"
+              ></input>
             </div>
           </form>
         </div>

@@ -1,0 +1,103 @@
+.rating-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .rating-inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  .rating-stars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .text_input {
+    height: 200px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    resize: none;
+  }
+  
+  .star {
+    font-size: 80px; /* Increase the font size to make the stars bigger */
+    color: #ccc;
+    cursor: pointer;
+    margin-right: 40px; /* Add margin-right for spacing between stars */
+  }
+  
+  .star:last-child {
+    margin-right: 0; /* Remove margin-right from the last star */
+  }
+  
+  .star.filled {
+    color: #f7bf16;
+  }
+  
+  .buttons-container {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  
+  .button-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    justify-content: center;
+  }
+  
+  button {
+    margin-right: 5px;
+    border: none; /* Remove the borders */
+    height: 40px; /* Increase the height */
+    border-radius: 5px; /* Add slight rounding */
+    padding: 0 10px; /* Add padding for visual spacing */
+  }
+  
+  .light-green {
+    background-color: lightgreen;
+  }
+  
+  .light-yellow {
+    background-color: lightyellow;
+  }
+  
+  .light-orange {
+    background-color: rgb(255, 199, 177)
+  }
+  
+  .light-red {
+    background-color: rgb(255, 153, 153);
+  }
+
+  .light-green,
+  .light-yellow,
+  .light-orange,
+  .light-red {
+    padding: 3px;
+    width: 100px;
+    height: 40px; /* Adjust the padding for visual spacing */
+  }
+  
+  .light-green img,
+  .light-yellow img,
+  .light-orange img,
+  .light-red img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 5px; /* Add slight rounding to the images */
+  }
+
+  .rectangles {
+    margin-top: 50px;
+  }
