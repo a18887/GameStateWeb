@@ -60,14 +60,6 @@ export default function Login() {
     setpassword("");
   };
 
-  //localStorage.setItem("user",data);
-  // navigate('/userDetails');
-  // setloginauto(true);
-  // if(loginauto==true)
-  //{
-  //   localStorage.setItem("token",data.data);
-  // }
-
   const registerpage = () => {
     navigate("/register");
   };

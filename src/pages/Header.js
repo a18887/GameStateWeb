@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 
+
 import pfp from "./../img/user.png";
 
 const Search = styled("div")(({ theme }) => ({

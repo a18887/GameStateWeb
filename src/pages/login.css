@@ -4,7 +4,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 1%; 
-    width: 2050px;
+
   }
 
   .login, .register{  
@@ -39,10 +39,8 @@ input[type="submit"] {
     border: 0px;
     font-family: 'Montserrat';
     font-style: normal;
-    font-weight: 400;
     font-size: 16px;
     line-height: 24px;
-    padding: 5px 20px;
     color: #000000;
     font-weight: 600;
 }
