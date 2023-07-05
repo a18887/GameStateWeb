@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./forum.css";
 import kazzio from "../img/kazzio.png";
 import pfp from "./../img/user.png";
@@ -19,12 +19,11 @@ export default function Forum() {
   const [ratings_count, setrating] = useState("");
   const [companyname, setcompanygame] = useState("");
   const [imagegame, setimagegame] = useState("");
+  const [searchParams] = useSearchParams();
   const [imagegamebackground, setimagegamebackground] = useState("");
   const [description, setdescription] = useState("");
   const [platforms, setplatforms] = useState("");
 
-  const id = 3498;
-  const game_id = 3498;
   const navigate = useNavigate();
 
   const topic_id = "649db41b60116fbbd903d104";
@@ -36,10 +35,15 @@ export default function Forum() {
   }
 
   function gamepage() {
-    navigate("/gamepage");
+    navigate(`/gamepage?id=${searchParams.get("id")}`);
+  }
+
+  function createTopic() {
+    navigate(`/createtopic?id=${searchParams.get("id")}`);
   }
 
   useEffect(() => {
+    const id = searchParams.get("id");
     console.log(id);
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/game/searchbyid", true);
@@ -103,29 +107,30 @@ export default function Forum() {
   }
 
   useEffect(() => {
+    const id = searchParams.get("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/topic/searchbygameid", true);
+    xhr.open("GET", `http://localhost:3000/topic/searchbygameid/${id}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
         console.log("teste");
         console.log(data);
 
-        settopics(data.message.topics);
-        settopicuser(data.message.topics.user_id);
+        settopics(data.topics);
+        console.log(topics)
 
-        for (let i = 0; i < data.message.topics.length; i++) {
+        for (let i = 0; i < data.topics.length; i++) {
           settopictitle((prevArray) => [
             ...prevArray,
-            data.message.topics[i].name,
+            data.topics[i].name,
           ]);
           settopictext((prevArray) => [
             ...prevArray,
-            data.message.topics[i].text,
+            data.topics[i].text,
           ]);
-          const createddata = data.message.topics.createdAt;
+          const createddata = data.topics.createdAt;
           const date = new Date(createddata);
           const formattedDate = {
             day: date.getDate(),
@@ -142,18 +147,13 @@ export default function Forum() {
       console.error("Request failed. Network error.");
     };
     const jsonData = {
-      game_id,
+      id,
     };
 
     const payload = JSON.stringify(jsonData);
     xhr.send(payload);
   }, []);
-
-  useEffect(() => {
-    console.log(topictitle);
-    console.log(topictext);
-  });
-
+  
   for (let i = 0; i < topics.length; i++) {
     divisions.push(<div key={i}></div>);
   }
@@ -252,7 +252,7 @@ export default function Forum() {
                   <input
                     type="submit"
                     className="buttonsclasscreatetopic"
-                    onClick={gamepage}
+                    onClick={createTopic}
                     n
                     name="log"
                     id="log"

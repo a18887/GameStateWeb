@@ -20,7 +20,7 @@ export default function CreateTopic() {
 
   const handleFormOnSubmit = async (e) => {
     e.preventDefault();
-    const forum_id = searchParams.get("game_id");
+    const forum_id = searchParams.get("id");
     const user_id = localStorage.getItem("id");
     if (!forum_id || !user_id) {
       alert("Unknown error");
@@ -77,7 +77,7 @@ export default function CreateTopic() {
   }
 
   useEffect(() => {
-    const id = searchParams.get("game_id");
+    const id = searchParams.get("id");
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/game/searchbyid", true);
