@@ -266,7 +266,7 @@ export default function Forum() {
                       <React.Fragment key={index}>
                         {division}
                         <div
-                          className="commentsflex"
+                          className="commentsflexforum"
                           styles={{ marginBottom: "10px" }}
                         >
                           <div className="divcomment">

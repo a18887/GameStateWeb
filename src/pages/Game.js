@@ -3,22 +3,66 @@ import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "./gamepage.css";
 import graph from "../img/graph.png";
-import star from "../img/star.png";
 import kazzio from "../img/kazzio.png";
 import wishlist from "../img/buttonwishlist.png";
 import Header from "./Header";
+import {Chart as ChartJs, BarElement,CategoryScale,LinearScale,Tooltip,Legend} from 'chart.js'
+import {Bar} from 'react-chartjs-2';
 
+var enter = 0;
+
+ChartJs.register( BarElement,CategoryScale,LinearScale,Tooltip,Legend)
 export default function Game() {
   const [namegame, setnamegame] = useState("");
   const [data, setdata] = useState("");
   const [ratings_count, setrating] = useState("");
+  const [ratings_media, setratings_media] = useState("");
   const [companyname, setcompanygame] = useState("");
   const [imagegame, setimagegame] = useState("");
+  const [ratingarray, setratingarray] = useState([]);
   const [imagegamebackground, setimagegamebackground] = useState("");
   const [description, setdescription] = useState("");
   const [platforms, setplatforms] = useState("");
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const data1 = Array(10).fill(0);
+
+
+  const graph = {
+    labels: [ '1', '2', '3', '4', '5','6', '7', '8', '9', '10'],
+    datasets: [
+      {
+        label: 'Rating per star',
+        data: ratingarray,
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,   
+      },
+    ],
+  };
+  
+  const options = {
+    scales: {
+      y: {
+        min: 0, // Set the minimum value for the y-axis
+        max: ratings_count, // Set the maximum value for the y-axis
+      },
+      x: {
+        min: 0, // Set the minimum value for the y-axis
+        max:10 , // Set the maximum value for the y-axis
+      },
+      xAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+    },
+  };
+  
+  
+
 
   function removeHTMLTags(text) {
     const tempElement = document.createElement("div");
@@ -27,17 +71,94 @@ export default function Game() {
   }
 
   function forumpage() {
-    navigate("/reviewgame");
+    navigate(`/forum?id=${searchParams.get("id")}`);
   }
 
   function reviewgamepage() {
-    navigate(`/topicpage?id=${searchParams.get("id")}`);
+    navigate(`/reviewgame?id=${searchParams.get("id")}`);
   }
 
   function addtowishlist() {
     //some code here
   }
 
+  useEffect(() => {
+    const id = searchParams.get("id");
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://localhost:3000/reviews/searchbyid/${id}`, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+      const responseData = JSON.parse(xhr.responseText);
+      setrating(responseData.numberOfReviews);
+     console.log(responseData);
+     console.log(responseData.reviewsgame)
+     var soma = 0;
+
+     for(let i = 0;i<responseData.reviewsgame.length;i++){
+      soma = soma + responseData.reviewsgame[i].rating;
+     }
+     
+    const media = Math.round((soma/responseData.reviewsgame.length));
+    setratings_media(media)
+
+     if (enter == 0){
+      for(let i = 0;i<responseData.reviewsgame.length;i++){
+        switch (responseData.reviewsgame[i].rating) {
+          case 1:  
+            data1[0] = data1[0]+1;
+             break;
+          case 2:
+            data1[1] = data1[1]+1;
+             break;
+          case 3:
+            data1[2] = data1[2]+1;
+             break;
+          case 4:
+            data1[3] = data1[3]+1;
+            break;
+          case 5:
+            data1[4] = data1[4]+1;
+             break;
+          case 6:
+            data1[5] = data1[5]+1;
+            break;
+          case 7:
+            data1[6] = data1[6]+1;
+             break;
+          case 8:
+            data1[7] = data1[7]+1;
+             break;
+          case 9:
+            data1[8] = data1[8]+1;
+             break;
+          case 10:
+            data1[9] = data1[9]+1;
+            break;
+          default:
+            break;   
+        }
+        //if(responseData.reviewsgame[i].rating)
+        setratingarray(data1);
+      }
+    }
+    enter = 1;
+    } else if(xhr.status === 203)
+    {
+      console.log("merda");
+      setrating(0);
+    } 
+    else {
+      console.error("Request failed. Status:", xhr.status);
+    }
+  };
+  xhr.onerror = () => {
+    console.error("Request failed. Network error.");
+  };
+
+  xhr.send();
+},[searchParams])
+console.log(ratingarray)
   useEffect(() => {
     const id = searchParams.get("id");
     const xhr = new XMLHttpRequest();
@@ -48,7 +169,6 @@ export default function Game() {
         const data = JSON.parse(xhr.responseText);
         console.log(data);
         setnamegame(data.message.name);
-        setrating(data.message.ratings_count);
         setdata(data.message.release_date);
         setdescription(removeHTMLTags(data.message.description));
         setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
@@ -115,76 +235,20 @@ export default function Game() {
             <div className="firstdivgame">
               <div className="divgame">
                 <div className="divdescription">
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
-                  <img
-                    src={star}
-                    alt="Profile Picture"
-                    class="ppic"
-                    width="20"
-                    height="20"
-                  ></img>
+                <div className="rating-stars"> 
+                  {[...Array(10)].map((_, index) => (
+                            <span
+                              key={index}
+                              className={`stargame ${
+                                ratings_media >= index + 1 ? "filled" : ""
+                      }`}
+                        
+                    >
+                  &#9733;
+                  </span>
+                    ))}
+              
+                  </div>
                 </div>
                 <div className="reviewbutton">
                   <input
@@ -215,13 +279,14 @@ export default function Game() {
                   />
                 </div>
                 <div className="graph">
-                  <img
-                    src={graph}
-                    width="300px"
-                    height="100px"
-                    alt="Logo Jogo"
-                  ></img>
-                  <p className="pgraph">Total Ratings: {ratings_count}</p>
+                  
+                <Bar data={graph} options={options} />
+                  {ratings_count!==null && ratings_count !== '' && ratings_count !== undefined ?(
+                        <p className="pgraph">Total Ratings: {ratings_count}</p>
+                  ) : (
+                    <p className="pgraph">Total Ratings: 0</p>
+                  ) }
+                 
                 </div>
               </div>
               <div className="seconddiv">

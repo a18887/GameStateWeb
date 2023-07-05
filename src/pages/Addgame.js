@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import mapImg from "../img/mapImg.png";
-import Rating from "react-rating";
 import finished from "./../img/accept.png";
 import pause from "./../img/pause.png";
 import stillplaying from "./../img/playbutton.png";

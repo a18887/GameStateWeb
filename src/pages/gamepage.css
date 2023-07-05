@@ -82,10 +82,29 @@ a.login:hover, a.logout:hover {
     margin-block-end: 0.22em;
 }
 
+.stargame {
+    font-size: 20px; /* Increase the font size to make the stars bigger */
+    color: #ccc;
+    cursor: pointer;
+    margin-right:10px; /* Add margin-right for spacing between stars */
+  }
+
+  .stargame:last-child {
+    margin-right: 0; /* Remove margin-right from the last star */
+  }
+  
+  .stargame.filled {
+    color: #f7bf16;
+  }
+
+.whereplay h3{
+    margin-block-start: 1rem;
+}
+
 .positioning{
     position: absolute;
     margin-left: 710px;
-    margin-top: 340px;
+    margin-top: 280px;
     padding: 4px;   
     z-index: 1;
 }
