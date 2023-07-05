@@ -27,11 +27,11 @@ export default function Game() {
   }
 
   function forumpage() {
-    navigate("/reviewgame");
+    navigate(`/forum?id=${searchParams.get("id")}`);
   }
 
   function reviewgamepage() {
-    navigate(`/topicpage?id=${searchParams.get("id")}`);
+    navigate(`/reviewgame?id=${searchParams.get("id")}`);
   }
 
   function addtowishlist() {
