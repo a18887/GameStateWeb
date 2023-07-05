@@ -62,6 +62,8 @@ export default function Profil() {
     const id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/user/${id}`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {
@@ -91,6 +93,8 @@ export default function Profil() {
     const user_id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/reviews/getreviewsbyuser", true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 201) {
@@ -122,6 +126,8 @@ export default function Profil() {
     const user_id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/reviews/searchbyuser", true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 201) {
@@ -161,6 +167,8 @@ export default function Profil() {
     const username = localStorage.getItem("user");
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/topic/searchbyid", true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 201) {

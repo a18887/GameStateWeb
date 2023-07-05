@@ -1,9 +1,8 @@
 import "./addgame.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "./Header";
-import mapImg from "../img/mapImg.png";
 import finished from "./../img/accept.png";
 import pause from "./../img/pause.png";
 import stillplaying from "./../img/playbutton.png";
@@ -132,6 +131,8 @@ export default function Game() {
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/reviews/create", true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);

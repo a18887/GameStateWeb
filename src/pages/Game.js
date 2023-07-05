@@ -90,6 +90,8 @@ export default function Game() {
       `http://localhost:3000/user/${user_id}/wishlist/${game_id}`,
       true
     );
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
@@ -112,6 +114,8 @@ export default function Game() {
     const user_id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `http://localhost:3000/user/${user_id}/wishlist`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
@@ -144,6 +148,8 @@ export default function Game() {
     const id = searchParams.get("id");
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/reviews/searchbyid/${id}`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {

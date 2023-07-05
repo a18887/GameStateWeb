@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { List, ListItem, ListItemText } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 import Button from "@mui/material/Button";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -72,6 +73,7 @@ export default function PrimarySearchAppBar() {
   const [searchValue, setSearchValue] = React.useState("");
   const [searchResults, setSearchResults] = React.useState([]);
   const [searchResultsID, setSearchResultsID] = React.useState([]);
+  const [username, setUsername] = React.useState("user");
   const navigate = useNavigate();
 
   const handleSearchChange = (event) => {
@@ -81,6 +83,12 @@ export default function PrimarySearchAppBar() {
   const handleListItemClick = (id) => {
     navigate(`/gamepage?id=${id}`);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const decodedToken = jwtDecode(token);
+    setUsername(decodedToken.username);
+  }, []);
 
   useEffect(() => {
     const fetchData = () => {
@@ -149,7 +157,7 @@ export default function PrimarySearchAppBar() {
             component="div"
             sx={{ display: { xs: "none", sm: "block" } }}
           >
-            user
+            {username}
           </Typography>
           <Search>
             <SearchIconWrapper>

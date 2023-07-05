@@ -13,6 +13,7 @@ export default function Login() {
 
   useEffect(() => {
     userRef.current.focus();
+    if (localStorage.getItem("token")) navigate("/homepage");
   }, []);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function Login() {
         if (data.status == 200) {
           localStorage.setItem("id", data.id);
           localStorage.setItem("user", data.username);
+          localStorage.setItem("token", data.token);
           navigate("/homepage");
           setErrMsg("");
         } else {

@@ -110,6 +110,8 @@ export default function Forum() {
     const id = searchParams.get("id");
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/topic/searchbygameid/${id}`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
 
     xhr.onload = () => {
@@ -119,17 +121,11 @@ export default function Forum() {
         console.log(data);
 
         settopics(data.topics);
-        console.log(topics)
+        console.log(topics);
 
         for (let i = 0; i < data.topics.length; i++) {
-          settopictitle((prevArray) => [
-            ...prevArray,
-            data.topics[i].name,
-          ]);
-          settopictext((prevArray) => [
-            ...prevArray,
-            data.topics[i].text,
-          ]);
+          settopictitle((prevArray) => [...prevArray, data.topics[i].name]);
+          settopictext((prevArray) => [...prevArray, data.topics[i].text]);
           const createddata = data.topics.createdAt;
           const date = new Date(createddata);
           const formattedDate = {
@@ -153,7 +149,7 @@ export default function Forum() {
     const payload = JSON.stringify(jsonData);
     xhr.send(payload);
   }, []);
-  
+
   for (let i = 0; i < topics.length; i++) {
     divisions.push(<div key={i}></div>);
   }

@@ -34,6 +34,8 @@ export default function CreateTopic() {
 
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/topic/create", true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);

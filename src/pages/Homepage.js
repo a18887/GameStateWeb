@@ -83,15 +83,18 @@ export default function Homepage() {
   function getRecentlyReviewedGames() {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", "http://localhost:3000/reviews?ordering=releasedate", true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
+      console.log(data.status);
       if (xhr.status === 200) {
         if (data.status === 200) {
-          const responseData = JSON.parse(xhr.responseText);
-          const responseArray = responseData.message;
+          const responseArray = data.message;
           const updatedArray = responseArray.slice(0, 9).map((item) => {
             const dateStr = item.createdAt;
             const date = new Date(dateStr).toISOString().split("T")[0];
+            console.log(date);
 
             return {
               ...item,
