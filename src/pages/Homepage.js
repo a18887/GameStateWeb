@@ -8,11 +8,12 @@ export default function Homepage() {
   const [popularGames, setPopularGames] = useState([]);
   const [recentGames, setRecentGames] = useState([]);
   const [upcomingGames, setUpcomingGames] = useState([]);
+  const [recentlyReviewedGames, setRecentlyReviewedGames] = useState([]);
   const [popularImages, setPopularImages] = useState([]);
   const [popularID, setPopularID] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  function getPopularGames() {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/game/search", true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -31,42 +32,91 @@ export default function Homepage() {
     };
 
     xhr.send();
+  }
 
-    const xhr1 = new XMLHttpRequest();
-    xhr1.open("GET", "http://localhost:3000/game/?ordering=releasedate", true);
-    xhr1.onload = () => {
-      if (xhr1.status === 200) {
-        const responseData = JSON.parse(xhr1.responseText);
-        const responseArray = responseData.message;
-        setRecentGames(responseArray);
+  function getRecentlyReleasedGames() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:3000/game/?ordering=releasedate", true);
+    xhr.onload = () => {
+      const data = JSON.parse(xhr.responseText);
+      if (xhr.status === 200) {
+        if (data.status === 200) {
+          const responseData = JSON.parse(xhr.responseText);
+          const responseArray = responseData.message;
+          setRecentGames(responseArray);
+        }
       } else {
-        console.error("Request failed. Status:", xhr1.status);
+        console.error("Request failed. Status:", xhr.status);
       }
     };
 
-    xhr1.onerror = () => {
+    xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
 
-    xhr1.send();
+    xhr.send();
+  }
 
-    const xhr2 = new XMLHttpRequest();
-    xhr2.open("GET", "http://localhost:3000/game/?ordering=-releasedate", true);
-    xhr2.onload = () => {
-      if (xhr2.status === 200) {
-        const responseData = JSON.parse(xhr2.responseText);
-        const responseArray = responseData.message;
-        setUpcomingGames(responseArray);
+  function getUpcomingReleasedGames() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:3000/game/?ordering=-releasedate", true);
+    xhr.onload = () => {
+      const data = JSON.parse(xhr.responseText);
+      if (xhr.status === 200) {
+        if (data.status === 200) {
+          const responseData = JSON.parse(xhr.responseText);
+          const responseArray = responseData.message;
+          setUpcomingGames(responseArray);
+        }
       } else {
-        console.error("Request failed. Status:", xhr1.status);
+        console.error("Request failed. Status:", xhr.status);
       }
     };
 
-    xhr2.onerror = () => {
+    xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
 
-    xhr2.send();
+    xhr.send();
+  }
+
+  function getRecentlyReviewedGames() {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:3000/reviews?ordering=releasedate", true);
+    xhr.onload = () => {
+      const data = JSON.parse(xhr.responseText);
+      if (xhr.status === 200) {
+        if (data.status === 200) {
+          const responseData = JSON.parse(xhr.responseText);
+          const responseArray = responseData.message;
+          const updatedArray = responseArray.slice(0, 9).map((item) => {
+            const dateStr = item.createdAt;
+            const date = new Date(dateStr).toISOString().split("T")[0];
+
+            return {
+              ...item,
+              createdAt: date,
+            };
+          });
+          setRecentlyReviewedGames(updatedArray);
+        }
+      } else {
+        console.error("Request failed. Status:", xhr.status);
+      }
+    };
+
+    xhr.onerror = () => {
+      console.error("Request failed. Network error.");
+    };
+
+    xhr.send();
+  }
+
+  useEffect(() => {
+    getPopularGames();
+    getRecentlyReleasedGames();
+    getUpcomingReleasedGames();
+    getRecentlyReviewedGames();
   }, []);
 
   useEffect(() => {
@@ -97,8 +147,8 @@ export default function Homepage() {
           <Grid container spacing={1}>
             <Grid xs={12} sm={6} md={4}>
               <h1>Recently Released</h1>
-              {recentGames.map((game) => (
-                <div className={styles.frame2}>
+              {recentGames.map((game, index) => (
+                <div className={styles.frame2} key={index}>
                   <img
                     src={game.image}
                     alt="game"
@@ -130,8 +180,22 @@ export default function Homepage() {
               ))}
             </Grid>
             <Grid xs={12} sm={6} md={4}>
-              <h1>Recently Reviewed</h1>
-              <h1>TODO</h1>
+              <h1>Recent Reviews</h1>
+              {recentlyReviewedGames.map((review) => (
+                <div className={styles.frame2}>
+                  <div>
+                    <p
+                      className={styles.text}
+                      onClick={() =>
+                        navigate(`/gamepage?id=${review.forum_id}`)
+                      }
+                    >
+                      {review.title}
+                    </p>
+                    <p className={styles.date}>{review.createdAt}</p>
+                  </div>
+                </div>
+              ))}
             </Grid>
           </Grid>
         </div>
