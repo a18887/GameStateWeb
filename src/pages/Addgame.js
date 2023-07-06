@@ -1,5 +1,5 @@
 import "./addgame.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "./Header";
@@ -15,6 +15,7 @@ export default function Game() {
   const [namegame, setnamegame] = useState("");
   const [data, setdata] = useState("");
   const [companyname, setcompanygame] = useState("");
+  const errRef = useRef();
   const [imagegame, setimagegame] = useState("");
   const [imagegamebackground, setimagegamebackground] = useState("");
   const [description, setdescription] = useState("");
@@ -70,22 +71,36 @@ export default function Game() {
     const id = searchParams.get("id");
     console.log(id);
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/game/searchbyid", true);
+    xhr.open("GET", `http://localhost:3000/games/${id}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
         console.log(data);
-        setnamegame(data.message.name);
-        setdata(data.message.release_date);
-        setdescription(removeHTMLTags(data.message.description));
-        setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
-        const platforms = data.message.platforms.map(
-          (item) => item.platform.name
-        );
-        setplatforms(platforms);
-        setimagegame(data.message.image);
-        setimagegamebackground(data.message.imageadd);
+        if(data.status === 200)
+        {
+          setnamegame(data.message.name);
+          setdata(data.message.release_date);
+          setdescription(removeHTMLTags(data.message.description));
+          setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
+          const platforms = data.message.platforms.map(
+            (item) => item.platform.name
+          );
+          setplatforms(platforms);
+          if(data.message.image!=null && data.message.imageadd != null ){
+            setimagegame(data.message.image);
+            setimagegamebackground(data.message.imageadd);
+          }
+          else if(data.message.image!=null && data.message.imageadd == null )
+          {
+            setimagegame(data.message.image);
+            setimagegamebackground(data.message.image);
+          }
+          else{
+            setimagegame(null);
+            setimagegamebackground(null);
+          }
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -93,12 +108,7 @@ export default function Game() {
     xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
-    const jsonData = {
-      id,
-    };
-
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }, []);
 
   const theme = createTheme({
@@ -127,10 +137,13 @@ export default function Game() {
       alert("Unknown error");
       navigate("/homepage");
     }
-    if (!rating) setErrMsg("");
-
+    if (!rating || !title) {
+      setErrMsg("Fill in all fields");
+      return;
+    }
+    setErrMsg("");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/reviews/create", true);
+    xhr.open("POST", "http://localhost:3000/reviews", true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -138,8 +151,10 @@ export default function Game() {
       const data = JSON.parse(xhr.responseText);
       if (xhr.status === 201) {
         if (data.status === 200) {
+          console.log(data)
           navigate(-1);
         }
+        console.log(data)
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -150,12 +165,12 @@ export default function Game() {
     };
 
     const jsonData = {
+      rating,
       title,
       text,
-      rating,
+      gameStatus,
       user_id,
       forum_id,
-      gameStatus,
     };
 
     const payload = JSON.stringify(jsonData);
@@ -170,6 +185,7 @@ export default function Game() {
         <div className="Appprinicipal">
           <div className="col-lg-3">
             <div class="img-container">
+            {imagegame!=null &&(
               <div className="positionimgtopic">
                 <h1 className="h2title">{namegame}</h1>
                 <p className="texttitle">
@@ -177,15 +193,18 @@ export default function Game() {
                   <span className="texttitle1">{companyname} </span>
                 </p>
               </div>
-              <div className="imggametopic">
-                <img
-                  src={imagegame}
-                  className="imggame"
-                  width="330px"
-                  height="330px"
-                  alt="Logo Jogo"
-                ></img>
-              </div>
+               )}
+              {imagegame!=null &&(
+                <div className="imggametopic">
+                  <img
+                    src={imagegame}
+                    className="imggame"
+                    width="330px"
+                    height="330px"
+                    alt="Logo Jogo"
+                  ></img>
+                </div>
+               )}
               <div className="imagebackground">
                 <img
                   src={imagegamebackground}
@@ -211,7 +230,14 @@ export default function Game() {
             </div>
             <div className="seconddivforum">
               <div className="forumbody">
-                <div className="rectangles">
+                <div className="rectanglesaddgame">
+                      <p
+                    ref={errRef}
+                    className={errMsg ? "errmsg" : "offscreen"}
+                    aria-live="assertive"
+                  >
+                    {errMsg}
+                  </p>
                   <h1>Review game:</h1>
                   <div className="rating-bar">
                     <div className="rating-inputs">
@@ -228,7 +254,7 @@ export default function Game() {
                           />
                         </ThemeProvider>
                       </div>
-                      <h3>Review title (optional)</h3>
+                      <h3>Review title (mandatory)</h3>
                       <input
                         type="text"
                         placeholder="Title"
@@ -295,12 +321,15 @@ export default function Game() {
                       </div>
                     </div>
                   </div>
+                  <div id="submit">
                   <input
                     type="submit"
-                    id="reviewButton"
-                    value="Create Topic"
+                    id="createTopicButton"
+                    value="Make Review"
                     onClick={createReview}
                   />
+                  </div>
+                  
                 </div>
               </div>
             </div>

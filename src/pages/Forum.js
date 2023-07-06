@@ -46,36 +46,46 @@ export default function Forum() {
     const id = searchParams.get("id");
     console.log(id);
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/game/searchbyid", true);
+    xhr.open("GET", `http://localhost:3000/games/${id}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
-        console.log(data);
-        setnamegame(data.message.name);
-        setrating(data.message.ratings_count);
-        setdata(data.message.release_date);
-        setdescription(removeHTMLTags(data.message.description));
-        setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
-        const platforms = data.message.platforms.map(
-          (item) => item.platform.name
-        );
-        setplatforms(platforms);
-        setimagegame(data.message.image);
-        setimagegamebackground(data.message.imageadd);
-      } else {
+        if(data.status === 200)
+        {
+          console.log(data);
+          setnamegame(data.message.name);
+          setrating(data.message.ratings_count);
+          setdata(data.message.release_date);
+          setdescription(removeHTMLTags(data.message.description));
+          setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
+          const platforms = data.message.platforms.map(
+            (item) => item.platform.name
+          );
+          setplatforms(platforms);
+          if(data.message.image!=null && data.message.imageadd != null ){
+            setimagegame(data.message.image);
+            setimagegamebackground(data.message.imageadd);
+          }
+          else if(data.message.image!=null && data.message.imageadd == null )
+          {
+            setimagegame(data.message.image);
+            setimagegamebackground(data.message.image);
+          }
+          else{
+            setimagegame(null);
+            setimagegamebackground(null);
+          }
+      } 
+      }else {
         console.error("Request failed. Status:", xhr.status);
       }
     };
     xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
-    const jsonData = {
-      id,
-    };
 
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }, []);
 
   function convertmesday(mes) {
@@ -109,7 +119,7 @@ export default function Forum() {
   useEffect(() => {
     const id = searchParams.get("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:3000/topic/searchbygameid/${id}`, true);
+    xhr.open("GET", `http://localhost:3000/games/${id}/topics`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -119,22 +129,24 @@ export default function Forum() {
         const data = JSON.parse(xhr.responseText);
         console.log("teste");
         console.log(data);
+        if(data.status === 200)
+        {   
+          settopics(data.topics);
+          console.log(topics);
 
-        settopics(data.topics);
-        console.log(topics);
-
-        for (let i = 0; i < data.topics.length; i++) {
-          settopictitle((prevArray) => [...prevArray, data.topics[i].name]);
-          settopictext((prevArray) => [...prevArray, data.topics[i].text]);
-          const createddata = data.topics.createdAt;
-          const date = new Date(createddata);
-          const formattedDate = {
-            day: date.getDate(),
-            month: convertmesday(date.getMonth() + 1),
-            year: date.getFullYear(),
-          };
-          setcommentdate((prevArray) => [...prevArray, formattedDate]);
-        }
+          for (let i = 0; i < data.topics.length; i++) {
+            settopictitle((prevArray) => [...prevArray, data.topics[i].name]);
+            settopictext((prevArray) => [...prevArray, data.topics[i].text]);
+            const createddata = data.topics.createdAt;
+            const date = new Date(createddata);
+            const formattedDate = {
+              day: date.getDate(),
+              month: convertmesday(date.getMonth() + 1),
+              year: date.getFullYear(),
+            };
+            setcommentdate((prevArray) => [...prevArray, formattedDate]);
+          }
+      }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -142,48 +154,13 @@ export default function Forum() {
     xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
-    const jsonData = {
-      id,
-    };
 
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }, []);
 
   for (let i = 0; i < topics.length; i++) {
     divisions.push(<div key={i}></div>);
   }
-
-  /* const commentinput = async (e) => {
-        e.preventDefault(); 
-        const user_id = commentuserid; 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/topic/createcomment", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onload = () => {
-          if (xhr.status === 201) {
-            const data = JSON.parse(xhr.responseText);
-            console.log(data);  
-            setcommenttext(prevArray => [...prevArray, text]);
-            setcommentdate(prevArray => [...prevArray, "just now"]);   
-            setcommentusername(prevArray => [...prevArray,localStorage.getItem('username')])
-      
-          } else {
-            console.error("Request failed. Status:", xhr.status);
-          }
-        };
-        xhr.onerror = () => {
-          console.error("Request failed. Network error.");
-        };
-        const jsonData = {
-          text,
-          user_id,
-          topic_id,
-        };
-    
-        const payload = JSON.stringify(jsonData);
-        xhr.send(payload);
-      }*/
 
   return (
     <>
@@ -192,6 +169,7 @@ export default function Forum() {
         <div className="Appprinicipal">
           <div className="col-lg-3">
             <div class="img-container">
+            {imagegame!=null &&(
               <div className="positionimgtopic">
                 <h1 className="h2title">{namegame}</h1>
                 <p className="texttitle">
@@ -199,15 +177,18 @@ export default function Forum() {
                   <span className="texttitle1">{companyname} </span>
                 </p>
               </div>
-              <div className="imggametopic">
-                <img
-                  src={imagegame}
-                  className="imggame"
-                  width="330px"
-                  height="330px"
-                  alt="Logo Jogo"
-                ></img>
-              </div>
+            )}
+               {imagegame!=null &&(
+                <div className="imggametopic">
+                  <img
+                    src={imagegame}
+                    className="imggame"
+                    width="330px"
+                    height="330px"
+                    alt="Logo Jogo"
+                  ></img>
+                </div>
+              )}
               <div className="imagebackground">
                 <img
                   src={imagegamebackground}

@@ -98,6 +98,11 @@
     border-radius: 5px; /* Add slight rounding to the images */
   }
 
-  .rectangles {
+  .rectanglesaddgame {
     margin-top: 50px;
+  }
+
+  .rectanglesaddgame #submit
+  {
+    text-align: center;
   }

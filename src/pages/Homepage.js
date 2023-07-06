@@ -15,12 +15,13 @@ export default function Homepage() {
 
   function getPopularGames() {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/game/search", true);
+    xhr.open("GET", "http://localhost:3000/games?search", true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
         const responseArray = responseData.populargames;
+        console.log(responseData)
         setPopularGames(responseArray);
       } else {
         console.error("Request failed. Status:", xhr.status);
@@ -36,7 +37,7 @@ export default function Homepage() {
 
   function getRecentlyReleasedGames() {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:3000/game/?ordering=releasedate", true);
+    xhr.open("GET", "http://localhost:3000/games/?ordering=releasedate", true);
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
       if (xhr.status === 200) {
@@ -59,7 +60,7 @@ export default function Homepage() {
 
   function getUpcomingReleasedGames() {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:3000/game/?ordering=-releasedate", true);
+    xhr.open("GET", "http://localhost:3000/games/?ordering=-releasedate", true);
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
       if (xhr.status === 200) {

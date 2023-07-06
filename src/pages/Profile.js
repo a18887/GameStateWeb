@@ -30,6 +30,8 @@ export default function Profil() {
   const [lasttopicimage, setLastTopicImage] = useState([]);
   const [topiclastdata, settopiclastdata] = useState([]);
   const [topicGameNames, setTopicGameNames] = useState([]);
+  const [wislistuser,setwishlistuser] = useState([]);
+  const [wishlistnumber,setwishlistnumber] = useState([]);
 
   function convertmesday(mes) {
     if (mes == 1) {
@@ -61,23 +63,27 @@ export default function Profil() {
   function getUser() {
     const id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:3000/user/${id}`, true);
+    xhr.open("GET", `http://localhost:3000/users/${id}`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        const createddata = responseData.message.createdAt;
-        const date = new Date(createddata);
-        const formattedDate = {
-          day: date.getDate(),
-          month: date.getMonth() + 1,
-          year: date.getFullYear(),
-        };
-        setuserdata(formattedDate);
-        setusercountry(responseData.message.country);
-        console.log(responseData);
+        if(responseData.status === 200)
+        {
+          const createddata = responseData.message.createdAt;
+          const date = new Date(createddata);
+          const formattedDate = {
+            day: date.getDate(),
+            month: date.getMonth() + 1,
+            year: date.getFullYear(),
+          };
+          setuserdata(formattedDate);
+          setusercountry(responseData.message.country);
+          console.log(responseData);
+        }
+        
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -90,21 +96,24 @@ export default function Profil() {
   }
 
   function getSubscribedGames() {
-    const user_id = localStorage.getItem("id");
+    const id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/reviews/getreviewsbyuser", true);
+    xhr.open("GET", `http://localhost:3000/users/${id}/subscribedgames`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        const subscribedGames = responseData.subscribedgames;
-        const subscribedRatings = responseData.ratings;
-        const subscribedStatus = responseData.gameStatus;
-        setSubscribedGames(subscribedGames.subscribedgames);
-        setSubscribedRatings(subscribedRatings.ratings);
-        setSubscribedStatus(subscribedStatus.gameStatus);
+        if(responseData.status === 200)
+        {
+          const subscribedGames = responseData.subscribedgames;
+          const subscribedRatings = responseData.ratings;
+          const subscribedStatus = responseData.gameStatus;
+          setSubscribedGames(subscribedGames.subscribedgames);
+          setSubscribedRatings(subscribedRatings.ratings);
+          setSubscribedStatus(subscribedStatus.gameStatus);
+      }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -114,38 +123,35 @@ export default function Profil() {
       console.error("Request failed. Network error.");
     };
 
-    const jsonData = {
-      user_id,
-    };
-
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }
 
   function getReviews() {
-    const user_id = localStorage.getItem("id");
+    const id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/reviews/searchbyuser", true);
+    xhr.open("GET", `http://localhost:3000/users/${id}/reviews`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        const reviews = responseData.reviewsbyusernames;
-
-        const lastReview = reviews[reviews.length - 1];
-        console.log(lastReview);
-        const createddata = lastReview.createdAt;
-        const date = new Date(createddata);
-        const formattedDate = {
-          day: date.getDate(),
-          month: convertmesday(date.getMonth() + 1),
-          year: date.getFullYear(),
-        };
-        setreviewlastdata(formattedDate);
-        setLastReview(lastReview);
-        setReviews(reviews);
+        if(responseData.status === 200)
+        {
+          const reviews = responseData.reviewsbyusernames;
+          const lastReview = reviews[reviews.length - 1];
+          console.log(lastReview);
+          const createddata = lastReview.createdAt;
+          const date = new Date(createddata);
+          const formattedDate = {
+            day: date.getDate(),
+            month: convertmesday(date.getMonth() + 1),
+            year: date.getFullYear(),
+          };
+          setreviewlastdata(formattedDate);
+          setLastReview(lastReview);
+          setReviews(reviews);
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -154,46 +160,45 @@ export default function Profil() {
     xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
-
-    const jsonData = {
-      user_id,
-    };
-
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }
 
   function getTopics() {
     const username = localStorage.getItem("user");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/topic/searchbyid", true);
+    xhr.open("GET", `http://localhost:3000/users/${username}/topics`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
+
         console.log(responseData);
-        const topics = responseData.message.topics;
-        const lastTopic = topics[topics.length - 1];
-        setLastTopic(lastTopic);
-        const createddata = lastTopic.createdAt;
-        const date = new Date(createddata);
-        const formattedDate = {
-          day: date.getDate(),
-          month: convertmesday(date.getMonth() + 1),
-          year: date.getFullYear(),
-        };
-        settopiclastdata(formattedDate);
-        setTopics(topics);
+       
+        if(responseData.status === 200)
+        {
+          const topics = responseData.message.topics;
+          const lastTopic = topics[topics.length - 1];
+          setLastTopic(lastTopic);
+          const createddata = lastTopic.createdAt;
+          const date = new Date(createddata);
+          const formattedDate = {
+            day: date.getDate(),
+            month: convertmesday(date.getMonth() + 1),
+            year: date.getFullYear(),
+          };
+          settopiclastdata(formattedDate);
+          setTopics(topics);
 
-        const names = responseData.message.names;
-        const images = responseData.message.images;
+          const names = responseData.message.names;
+          const images = responseData.message.images;
 
-        setTopicGameNames(names);
+          setTopicGameNames(names);
 
-        setTopicImages(images);
-        setLastTopicImage(images[images.length - 1]);
+          setTopicImages(images);
+          setLastTopicImage(images[images.length - 1]);
+      }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -203,12 +208,43 @@ export default function Profil() {
       console.error("Request failed. Network error.");
     };
 
-    const jsonData = {
-      username,
+    xhr.send();
+  }
+
+  function getWishlist() {
+    const id = localStorage.getItem("id");
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://localhost:3000/users/${id}/wishlist`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const responseData = JSON.parse(xhr.responseText);
+        if(responseData.status === 200)
+        {
+          if(responseData.wishlistbyusernames.length>0)
+          {
+            const wishlist = responseData.wishlistbyusernames;
+            setwishlistnumber(wishlist);
+            for(let i= 0;i<responseData.wishlistbyusernames.length;i++)
+            {
+              console.log(responseData.wishlistbyusernames[i].image);
+              setwishlistuser((prevArray) => [...prevArray,responseData.wishlistbyusernames[i].image]);
+            }
+        
+          }
+        }
+      } else {
+        console.error("Request failed. Status:", xhr.status);
+      }
     };
 
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.onerror = () => {
+      console.error("Request failed. Network error.");
+    };
+
+    xhr.send();
   }
 
   useEffect(() => {
@@ -216,6 +252,7 @@ export default function Profil() {
     getReviews();
     getTopics();
     getUser();
+    getWishlist();
   }, []);
 
   useEffect(() => {
@@ -396,38 +433,16 @@ export default function Profil() {
             </Grid>
             <Grid xs={12} sm={6} md={3}>
               <h1>Wishlist</h1>
-              <div className={styles.divflexgamesection}>
-                <div className={styles.divflexgamesectionrating}>
-                  <div className={styles.frame}>
+              <Grid container spacing={5}>
+              {wishlistnumber.map((wishlist,index) => (
+                <Grid xs={12} sm={6} key={wishlist._id}>
                     <div className={styles.frameGameImage}>
-                      <img src={image} alt="game" id={styles.subscribedGames} />
+                      <img src={wishlist.image} alt="game" id={styles.subscribedGames} />
                     </div>
-                  </div>
-                </div>
-                <div className={styles.divflexgamesectionrating}>
-                  <div className={styles.frame}>
-                    <div className={styles.frameGameImage}>
-                      <img src={image} alt="game" id={styles.subscribedGames} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.divflexgamesection}>
-                <div className={styles.divflexgamesectionrating}>
-                  <div className={styles.frame}>
-                    <div className={styles.frameGameImage}>
-                      <img src={image} alt="game" id={styles.subscribedGames} />
-                    </div>
-                  </div>
-                </div>
-                <div className={styles.divflexgamesectionrating}>
-                  <div className={styles.frame}>
-                    <div className={styles.frameGameImage}>
-                      <img src={image} alt="game" id={styles.subscribedGames} />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                </Grid>
+              ))}
+              </Grid>
+          
             </Grid>
             <Grid xs={12} sm={6} md={3}>
               <h1>Topics</h1>

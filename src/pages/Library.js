@@ -3,11 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "./Header.js";
 import styles from "./library.module.css";
 import Grid from "@mui/material/Unstable_Grid2";
-
-import god from "../img/godofwar.png";
-import icon from "../img/accept.png";
 import star from "../img/star.png";
-
 import questionmark from "../img/questionmark.png";
 import accept from "../img/accept.png";
 import playbutton from "../img/playbutton.png";
@@ -27,21 +23,25 @@ export default function Library() {
   const navigate = useNavigate();
 
   function getSubscribedGames() {
-    const user_id = localStorage.getItem("id");
+    const id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/reviews/getreviewsbyuser", true);
+    xhr.open("GET", `http://localhost:3000/users/${id}/subscribedgames`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        const subscribedGames = responseData.subscribedgames;
-        const subscribedRatings = responseData.ratings;
-        const subscribedStatus = responseData.gameStatus;
-        setSubscribedGames(subscribedGames.subscribedgames);
-        setSubscribedRatings(subscribedRatings.ratings);
-        setSubscribedStatus(subscribedStatus.gameStatus);
+        console.log(responseData)
+        if(responseData.status === 200)
+        {
+          const subscribedGames = responseData.subscribedgames;
+          const subscribedRatings = responseData.ratings;
+          const subscribedStatus = responseData.gameStatus;
+          setSubscribedGames(subscribedGames.subscribedgames);
+          setSubscribedRatings(subscribedRatings.ratings);
+          setSubscribedStatus(subscribedStatus.gameStatus);
+      }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -51,26 +51,24 @@ export default function Library() {
       console.error("Request failed. Network error.");
     };
 
-    const jsonData = {
-      user_id,
-    };
-
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }
 
   function getReviews() {
-    const user_id = localStorage.getItem("id");
+    const id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/reviews/searchbyuser", true);
+    xhr.open("GET", `http://localhost:3000/users/${id}/reviews`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        const reviews = responseData.reviewsbyusernames;
-        setReviews(reviews);
+        if(responseData.status === 200)
+        {
+          const reviews = responseData.reviewsbyusernames;
+          setReviews(reviews);
+        } 
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -80,30 +78,27 @@ export default function Library() {
       console.error("Request failed. Network error.");
     };
 
-    const jsonData = {
-      user_id,
-    };
-
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }
 
   function getTopics() {
     const username = localStorage.getItem("user");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/topic/searchbyid", true);
+    xhr.open("GET", `http://localhost:3000/users/${username}/topics`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        const topics = responseData.message.topics;
-        const names = responseData.message.names;
-        const images = responseData.message.images;
-        setTopics(topics);
-        setTopicGameNames(names);
-        setTopicImages(images);
+        if(responseData.status === 200){
+          const topics = responseData.message.topics;
+          const names = responseData.message.names;
+          const images = responseData.message.images;
+          setTopics(topics);
+          setTopicGameNames(names);
+          setTopicImages(images);
+        }     
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -113,12 +108,7 @@ export default function Library() {
       console.error("Request failed. Network error.");
     };
 
-    const jsonData = {
-      username,
-    };
-
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }
 
   useEffect(() => {
@@ -130,6 +120,7 @@ export default function Library() {
   useEffect(() => {
     const images = subscribedGames.filter((_, index) => index % 2 === 0);
     const id = subscribedGames.filter((_, index) => index % 2 === 1);
+    console.log(images)
     setSubscribedImages(images.slice(0, 6));
     setSubscribedID(id.slice(0, 6));
   }, [subscribedGames]);

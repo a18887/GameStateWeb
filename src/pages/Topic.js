@@ -45,16 +45,18 @@ export default function Topico() {
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
-        setnamegame(data.message.name);
-        setdata(data.message.release_date);
-        setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
-        setimagegame(data.message.image);
+        if(data.status === 200){
+          setnamegame(data.message.name);
+          setdata(data.message.release_date);
+          setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
+          setimagegame(data.message.image);
 
-        if (data.message.imageadd != null) {
-          setimagegamebackground(data.message.imageadd);
-        } else {
-          setimagegamebackground(data.message.image);
-        }
+          if (data.message.imageadd != null) {
+            setimagegamebackground(data.message.imageadd);
+          } else {
+            setimagegamebackground(data.message.image);
+          }
+      }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -106,49 +108,51 @@ export default function Topico() {
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
-        console.log(data);
-        const createddata = data.message.topics.createdAt;
-        const date = new Date(createddata);
+        if(data.status === 200){
+          console.log(data);
+          const createddata = data.message.topics.createdAt;
+          const date = new Date(createddata);
 
-        const formattedDate = {
-          day: date.getDate(),
-          month: convertmesday(date.getMonth() + 1),
-          year: date.getFullYear(),
-        };
-        settimedata(formattedDate);
-        settopictext(data.message.topics.text);
-        settopictitle(data.message.topics.name);
-        setcommentuserid(data.message.topics.user_id);
-        setusernametopic(data.message.topics.username + ",");
-        if (enter == 0) {
-          for (let i = 0; i < data.message.topics.comments.length; i++) {
-            setcommenttext((prevArray) => [
-              ...prevArray,
-              data.message.topics.comments[i].text,
-            ]);
-            setcommentusername((prevArray) => [
-              ...prevArray,
-              data.message.topics.comments[i].username,
-            ]);
-            const createddata = data.message.topics.comments[i].createdAt;
-            const date = new Date(createddata);
-            const formattedDate = {
-              day: date.getDate(),
-              month: convertmesday(date.getMonth() + 1),
-              year: date.getFullYear(),
-            };
-            setcommentdate((prevArray) => [...prevArray, formattedDate]);
-          }
+          const formattedDate = {
+            day: date.getDate(),
+            month: convertmesday(date.getMonth() + 1),
+            year: date.getFullYear(),
+          };
+          settimedata(formattedDate);
+          settopictext(data.message.topics.text);
+          settopictitle(data.message.topics.name);
+          setcommentuserid(data.message.topics.user_id);
+          setusernametopic(data.message.topics.username + ",");
+          if (enter == 0) {
+            for (let i = 0; i < data.message.topics.comments.length; i++) {
+              setcommenttext((prevArray) => [
+                ...prevArray,
+                data.message.topics.comments[i].text,
+              ]);
+              setcommentusername((prevArray) => [
+                ...prevArray,
+                data.message.topics.comments[i].username,
+              ]);
+              const createddata = data.message.topics.comments[i].createdAt;
+              const date = new Date(createddata);
+              const formattedDate = {
+                day: date.getDate(),
+                month: convertmesday(date.getMonth() + 1),
+                year: date.getFullYear(),
+              };
+              setcommentdate((prevArray) => [...prevArray, formattedDate]);
+            }
 
-          for (let i = 0; i < data.message.topics.likeDislike.length; i++) {
-            if (data.message.topics.likeDislike[i].username == username) {
-              setusernameLD(username);
+            for (let i = 0; i < data.message.topics.likeDislike.length; i++) {
+              if (data.message.topics.likeDislike[i].username == username) {
+                setusernameLD(username);
+              }
             }
           }
-        }
-        setlike(data.message.topics.likes);
-        setdislike(data.message.topics.dislikes);
-        enter = 1;
+          setlike(data.message.topics.likes);
+          setdislike(data.message.topics.dislikes);
+          enter = 1;
+      }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -179,13 +183,15 @@ export default function Topico() {
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
-        console.log(data);
-        setcommenttext((prevArray) => [...prevArray, text]);
-        setcommentdate((prevArray) => [...prevArray, "just now"]);
-        setcommentusername((prevArray) => [
-          ...prevArray,
-          localStorage.getItem("username"),
-        ]);
+        if(data.status === 200){   
+          console.log(data);
+          setcommenttext((prevArray) => [...prevArray, text]);
+          setcommentdate((prevArray) => [...prevArray, "just now"]);
+          setcommentusername((prevArray) => [
+            ...prevArray,
+            localStorage.getItem("username"),
+          ]);
+      }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "./gamepage.css";
-import graph from "../img/graph.png";
 import kazzio from "../img/kazzio.png";
 import wishlist from "../img/buttonwishlist.png";
 import Header from "./Header";
@@ -87,7 +86,7 @@ export default function Game() {
     const xhr = new XMLHttpRequest();
     xhr.open(
       "DELETE",
-      `http://localhost:3000/user/${user_id}/wishlist/${game_id}`,
+      `http://localhost:3000/users/${user_id}/wishlist/${game_id}`,
       true
     );
     const token = localStorage.getItem("token");
@@ -113,7 +112,7 @@ export default function Game() {
     const game_id = searchParams.get("id");
     const user_id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `http://localhost:3000/user/${user_id}/wishlist`, true);
+    xhr.open("POST", `http://localhost:3000/users/${user_id}/wishlist`, true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -147,70 +146,71 @@ export default function Game() {
   useEffect(() => {
     const id = searchParams.get("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:3000/reviews/searchbyid/${id}`, true);
+    xhr.open("GET", `http://localhost:3000/games/${id}/reviews`, true);
     const token = localStorage.getItem("token");
+    console.log(token)
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        setrating(responseData.numberOfReviews);
-        console.log(responseData);
-        console.log(responseData.reviewsgame);
-        var soma = 0;
+        console.log(responseData)
+        if(responseData.status === 200){
+          setrating(responseData.numberOfReviews);
+          var soma = 0;
 
-        for (let i = 0; i < responseData.reviewsgame.length; i++) {
-          soma = soma + responseData.reviewsgame[i].rating;
-        }
-
-        const media = Math.round(soma / responseData.reviewsgame.length);
-        setratings_media(media);
-
-        if (enter == 0) {
           for (let i = 0; i < responseData.reviewsgame.length; i++) {
-            switch (responseData.reviewsgame[i].rating) {
-              case 1:
-                data1[0] = data1[0] + 1;
-                break;
-              case 2:
-                data1[1] = data1[1] + 1;
-                break;
-              case 3:
-                data1[2] = data1[2] + 1;
-                break;
-              case 4:
-                data1[3] = data1[3] + 1;
-                break;
-              case 5:
-                data1[4] = data1[4] + 1;
-                break;
-              case 6:
-                data1[5] = data1[5] + 1;
-                break;
-              case 7:
-                data1[6] = data1[6] + 1;
-                break;
-              case 8:
-                data1[7] = data1[7] + 1;
-                break;
-              case 9:
-                data1[8] = data1[8] + 1;
-                break;
-              case 10:
-                data1[9] = data1[9] + 1;
-                break;
-              default:
-                break;
-            }
-            //if(responseData.reviewsgame[i].rating)
-            setratingarray(data1);
+            soma = soma + responseData.reviewsgame[i].rating;
           }
-        }
-        enter = 1;
-      } else if (xhr.status === 203) {
-        console.log("merda");
+
+          const media = Math.round(soma / responseData.reviewsgame.length);
+          setratings_media(media);
+
+          if (enter == 0) {
+            for (let i = 0; i < responseData.reviewsgame.length; i++) {
+              switch (responseData.reviewsgame[i].rating) {
+                case 1:
+                  data1[0] = data1[0] + 1;
+                  break;
+                case 2:
+                  data1[1] = data1[1] + 1;
+                  break;
+                case 3:
+                  data1[2] = data1[2] + 1;
+                  break;
+                case 4:
+                  data1[3] = data1[3] + 1;
+                  break;
+                case 5:
+                  data1[4] = data1[4] + 1;
+                  break;
+                case 6:
+                  data1[5] = data1[5] + 1;
+                  break;
+                case 7:
+                  data1[6] = data1[6] + 1;
+                  break;
+                case 8:
+                  data1[7] = data1[7] + 1;
+                  break;
+                case 9:
+                  data1[8] = data1[8] + 1;
+                  break;
+                case 10:
+                  data1[9] = data1[9] + 1;
+                  break;
+                default:
+                  break;
+              }
+              //if(responseData.reviewsgame[i].rating)
+              setratingarray(data1);
+            }
+          }
+          enter = 1;
+      }
+      else if (responseData.status === 203) {
         setrating(0);
-      } else {
+      }} else {
         console.error("Request failed. Status:", xhr.status);
       }
     };
@@ -220,30 +220,41 @@ export default function Game() {
 
     xhr.send();
   }, [searchParams]);
-  console.log(ratingarray);
+
   useEffect(() => {
     const id = searchParams.get("id");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/game/searchbyid", true);
+    xhr.open("GET", `http://localhost:3000/games/${id}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
-        console.log(data);
-        setnamegame(data.message.name);
-        setdata(data.message.release_date);
-        setdescription(removeHTMLTags(data.message.description));
-        setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
-        const platforms = data.message.platforms.map(
-          (item) => item.platform.name
-        );
-        setplatforms(platforms);
-        setimagegame(data.message.image);
-        if (data.message.imageadd != null) {
-          setimagegamebackground(data.message.imageadd);
-        } else {
-          setimagegamebackground(data.message.image);
+        if(data.status === 200)
+        {
+          console.log(data);
+          setnamegame(data.message.name);
+          setdata(data.message.release_date);
+          setdescription(removeHTMLTags(data.message.description));
+          setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
+          const platforms = data.message.platforms.map(
+            (item) => item.platform.name
+          );
+          setplatforms(platforms);
+          if(data.message.image!=null && data.message.imageadd != null ){
+            setimagegame(data.message.image);
+            setimagegamebackground(data.message.imageadd);
+          }
+          else if(data.message.image!=null && data.message.imageadd == null )
+          {
+            setimagegame(data.message.image);
+            setimagegamebackground(data.message.image);
+          }
+          else{
+            setimagegame(null);
+            setimagegamebackground(null);
+          }
         }
+        
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -251,12 +262,8 @@ export default function Game() {
     xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
-    const jsonData = {
-      id,
-    };
+    xhr.send();
 
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
   }, [searchParams]);
 
   return (
@@ -265,22 +272,26 @@ export default function Game() {
       <div className="Appprinicipal">
         <div className="col-lg-3">
           <div class="img-container">
-            <div className="positioning">
+          {imagegame!=null &&(
+            <div className="positioning" id ="positionimgid">
               <h1 className="h2title">{namegame}</h1>
               <p className="texttitle">
                 Released on <span className="textdata">{data} </span> by{" "}
                 <span className="texttitle1">{companyname} </span>
               </p>
             </div>
-            <div className="positionimggame">
-              <img
-                src={imagegame}
-                className="imggame"
-                width="330px"
-                height="330px"
-                alt="Logo Jogo"
-              ></img>
-            </div>
+              )}
+            {imagegame!=null &&(
+              <div className="positionimggame" id="imagedivdisplay">
+                <img
+                  src={imagegame}
+                  className="imggame"
+                  width="330px"
+                  height="330px"
+                  alt="Logo Jogo"
+                ></img>
+              </div>
+              )}
             <div className="imagebackground">
               <img
                 src={imagegamebackground}
@@ -329,6 +340,7 @@ export default function Game() {
                   <input
                     type="image"
                     src={wishlist}
+                    onClick={() => addWishlistGame()}
                     width="35"
                     height="35"
                     name="log"
@@ -345,45 +357,6 @@ export default function Game() {
                   )}
                 </div>
               </div>
-              <div className="reviewbutton">
-                <input
-                  type="submit"
-                  className="buttonsclass"
-                  onClick={forumpage}
-                  n
-                  name="log"
-                  id="log"
-                  value="Forum"
-                />
-              </div>
-              <div className="reviewbutton">
-                <input
-                  type="submit"
-                  className="buttonsclassreview"
-                  onClick={reviewgamepage}
-                  name="log"
-                  id="log"
-                  value="Review Game"
-                />
-                <input
-                  type="image"
-                  src={wishlist}
-                  width="35"
-                  height="35"
-                  name="log"
-                  onClick={() => addWishlistGame()}
-                />
-              </div>
-              <div className="graph">
-                <img
-                  src={graph}
-                  width="300px"
-                  height="100px"
-                  alt="Logo Jogo"
-                ></img>
-                <p className="pgraph">Total Ratings: {ratings_count}</p>
-              </div>
-            </div>
             <div className="seconddiv">
               <div>
                 <div className="gamebio">
@@ -467,6 +440,7 @@ export default function Game() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

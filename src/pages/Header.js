@@ -80,6 +80,11 @@ export default function PrimarySearchAppBar() {
     setSearchValue(event.target.value);
   };
 
+  const logout = ()=>{
+    localStorage.clear();
+    navigate("/");
+  }
+
   const handleListItemClick = (id) => {
     navigate(`/gamepage?id=${id}`);
   };
@@ -93,10 +98,10 @@ export default function PrimarySearchAppBar() {
   useEffect(() => {
     const fetchData = () => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://localhost:3000/game/search", true);
+      xhr.open("GET", "http://localhost:3000/games?search", true);
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onload = () => {
-        if (xhr.status === 201) {
+        if (xhr.status === 200) {
           const responseData = JSON.parse(xhr.responseText);
           const responseArray = responseData.game;
           const responseArrayID = responseData.id;
@@ -116,12 +121,7 @@ export default function PrimarySearchAppBar() {
         console.error("Request failed. Network error.");
       };
 
-      const jsonData = {
-        name: searchValue,
-      };
-
-      const payload = JSON.stringify(jsonData);
-      xhr.send(payload);
+      xhr.send();
     };
 
     const delayTimer = setTimeout(() => {
@@ -197,7 +197,7 @@ export default function PrimarySearchAppBar() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <a style={{ color: "white", marginLeft: "16px" }}>Logout</a>
+            <a style={{ color: "white", marginLeft: "16px" }}  onClick={logout}>Logout</a>
           </Box>
         </Toolbar>
       </AppBar>

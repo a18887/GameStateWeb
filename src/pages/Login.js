@@ -29,7 +29,7 @@ export default function Login() {
     setErrMsg("");
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/user/login", true);
+    xhr.open("POST", "http://localhost:3000/users/login", true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);

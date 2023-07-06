@@ -34,7 +34,7 @@ export default function Forgotpassword() {
         }
         setErrMsg('');
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/user/forgotpwd", true);
+        xhr.open("POST", "http://localhost:3000/users/forgotpwd", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             const data = JSON.parse(xhr.responseText);

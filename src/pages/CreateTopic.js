@@ -33,7 +33,7 @@ export default function CreateTopic() {
     setErrMsg("");
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/topic/create", true);
+    xhr.open("POST", "http://localhost:3000/topics", true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -82,16 +82,31 @@ export default function CreateTopic() {
     const id = searchParams.get("id");
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/game/searchbyid", true);
+    xhr.open("GET", `http://localhost:3000/games/${id}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         if (data.status === 200) {
           setGameName(data.message.name);
+          console.log(data)
+          if(data.message.developers.length > 0)
           setDeveloper(data.message.developers[0].name);
-          setImage(data.message.image);
-          setBackgroundImage(data.message.imageadd);
+          if(data.message.image!=null && data.message.imageadd != null ){
+            setImage(data.message.image);
+            setBackgroundImage(data.message.imageadd);
+          }
+          else if(data.message.image!=null && data.message.imageadd == null )
+          {
+            setImage(data.message.image);
+            setBackgroundImage(data.message.image);
+          }
+          else{
+            setImage(null);
+            setBackgroundImage(null);
+          }
+         
+          
           setReleaseDate(data.message.release_date);
         }
       } else {
@@ -103,12 +118,7 @@ export default function CreateTopic() {
       console.error("Request failed. Network error.");
     };
 
-    const jsonData = {
-      id,
-    };
-
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }, []);
 
   return (
@@ -117,6 +127,7 @@ export default function CreateTopic() {
       <div className="Appprinicipal">
         <div className="col-lg-3">
           <div class="img-container">
+          {image!=null &&(
             <div className="positionimgtopic">
               <h1 className="h2title">{gameName}</h1>
               <p className="texttitle">
@@ -124,6 +135,8 @@ export default function CreateTopic() {
                 <span className="texttitle1">{developer} </span>
               </p>
             </div>
+            )}
+            {image!=null &&(
             <div className="imggametopic">
               <img
                 src={image}
@@ -133,6 +146,7 @@ export default function CreateTopic() {
                 alt="Logo Jogo"
               ></img>
             </div>
+            )}
             <div className="imagebackground">
               <img
                 src={backgroundImage}

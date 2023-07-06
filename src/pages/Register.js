@@ -46,7 +46,7 @@ export default function Register() {
     }
 
     const xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/user/register", true);
+        xhr.open("POST", "http://localhost:3000/users/register", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             const data = JSON.parse(xhr.responseText);
