@@ -10,7 +10,7 @@ import mapImg from "../img/mapImg.png";
 export default function Forum() {
   const [topictext, settopictext] = useState([]);
   const [topictitle, settopictitle] = useState([]);
-  const [topics, settopics] = useState("");
+  const [topics, settopics] = useState([]);
   const [topicuser, settopicuser] = useState("");
   const [commentdate, setcommentdate] = useState([]);
   const divisions = [];
@@ -23,6 +23,7 @@ export default function Forum() {
   const [imagegamebackground, setimagegamebackground] = useState("");
   const [description, setdescription] = useState("");
   const [platforms, setplatforms] = useState("");
+  const [gameId, setGameId] = useState("");
 
   const navigate = useNavigate();
 
@@ -44,6 +45,7 @@ export default function Forum() {
 
   useEffect(() => {
     const id = searchParams.get("id");
+    setGameId(id);
     console.log(id);
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}`, true);
@@ -51,8 +53,7 @@ export default function Forum() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
-        if(data.status === 200)
-        {
+        if (data.status === 200) {
           console.log(data);
           setnamegame(data.message.name);
           setrating(data.message.ratings_count);
@@ -63,21 +64,21 @@ export default function Forum() {
             (item) => item.platform.name
           );
           setplatforms(platforms);
-          if(data.message.image!=null && data.message.imageadd != null ){
+          if (data.message.image != null && data.message.imageadd != null) {
             setimagegame(data.message.image);
             setimagegamebackground(data.message.imageadd);
-          }
-          else if(data.message.image!=null && data.message.imageadd == null )
-          {
+          } else if (
+            data.message.image != null &&
+            data.message.imageadd == null
+          ) {
             setimagegame(data.message.image);
             setimagegamebackground(data.message.image);
-          }
-          else{
+          } else {
             setimagegame(null);
             setimagegamebackground(null);
           }
-      } 
-      }else {
+        }
+      } else {
         console.error("Request failed. Status:", xhr.status);
       }
     };
@@ -116,7 +117,7 @@ export default function Forum() {
     }
   }
 
-  useEffect(() => {
+  function getTopics() {
     const id = searchParams.get("id");
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}/topics`, true);
@@ -129,10 +130,9 @@ export default function Forum() {
         const data = JSON.parse(xhr.responseText);
         console.log("teste");
         console.log(data);
-        if(data.status === 200)
-        {   
+        if (data.status === 200) {
           settopics(data.topics);
-          console.log(topics);
+          console.log("ola" + topics);
 
           for (let i = 0; i < data.topics.length; i++) {
             settopictitle((prevArray) => [...prevArray, data.topics[i].name]);
@@ -146,7 +146,7 @@ export default function Forum() {
             };
             setcommentdate((prevArray) => [...prevArray, formattedDate]);
           }
-      }
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -156,6 +156,10 @@ export default function Forum() {
     };
 
     xhr.send();
+  }
+
+  useEffect(() => {
+    getTopics();
   }, []);
 
   for (let i = 0; i < topics.length; i++) {
@@ -169,16 +173,16 @@ export default function Forum() {
         <div className="Appprinicipal">
           <div className="col-lg-3">
             <div class="img-container">
-            {imagegame!=null &&(
-              <div className="positionimgtopic">
-                <h1 className="h2title">{namegame}</h1>
-                <p className="texttitle">
-                  Released on <span className="textdata">{data} </span> by{" "}
-                  <span className="texttitle1">{companyname} </span>
-                </p>
-              </div>
-            )}
-               {imagegame!=null &&(
+              {imagegame != null && (
+                <div className="positionimgtopic">
+                  <h1 className="h2title">{namegame}</h1>
+                  <p className="texttitle">
+                    Released on <span className="textdata">{data} </span> by{" "}
+                    <span className="texttitle1">{companyname} </span>
+                  </p>
+                </div>
+              )}
+              {imagegame != null && (
                 <div className="imggametopic">
                   <img
                     src={imagegame}
@@ -238,38 +242,29 @@ export default function Forum() {
                 </div>
                 <div className="rectangles">
                   <h3>Topics:</h3>
-                  <div className="rectanglecomments">
-                    {divisions.map((division, index) => (
-                      <React.Fragment key={index}>
-                        {division}
-                        <div
-                          className="commentsflexforum"
-                          styles={{ marginBottom: "10px" }}
-                        >
-                          <div className="divcomment">
-                            <p className="topictextuser" key={index}>
-                              {topictitle[index]}
-                            </p>
-                            <p className="textcomment" key={index}>
-                              {topictext[index]}
-                            </p>
-                          </div>
-                          <div className="userimage">
-                            <img
-                              src={kazzio}
-                              alt="profile picture"
-                              width="40"
-                              height="40"
-                              style={{
-                                borderRadius: "50%",
-                                marginRight: "10px",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </React.Fragment>
-                    ))}
-                  </div>
+                  {topics.map((topic) => (
+                    <div
+                      className="rectanglecomments"
+                      id="rectanglecommentsForum"
+                      onClick={() =>
+                        navigate(`/topicpage?id=${topic._id}&game_id=${gameId}`)
+                      }
+                    >
+                      <h3>{topic.name}</h3>
+                      <p className="pmargin0">{topic.text}</p>
+                      <div className="seconddivimage">
+                        <img
+                          img
+                          id="imgsource"
+                          src={kazzio}
+                          width="30"
+                          height="30"
+                          className="imagereview"
+                        ></img>
+                        <p className="pmargin0">{topic.username}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

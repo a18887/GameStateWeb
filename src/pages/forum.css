@@ -157,3 +157,7 @@ select {
 .rating-inputs h3 {
     margin-block-start: 1rem;
 }
+
+#rectanglecommentsForum {
+    cursor: pointer;
+}

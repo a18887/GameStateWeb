@@ -29,6 +29,7 @@ export default function Game() {
   const [imagegamebackground, setimagegamebackground] = useState("");
   const [description, setdescription] = useState("");
   const [platforms, setplatforms] = useState("");
+  const [reviews, setReviews] = useState([]);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const data1 = Array(10).fill(0);
@@ -148,14 +149,12 @@ export default function Game() {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}/reviews`, true);
     const token = localStorage.getItem("token");
-    console.log(token)
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        console.log(responseData)
-        if(responseData.status === 200){
+        if (responseData.status === 200) {
           setrating(responseData.numberOfReviews);
           var soma = 0;
 
@@ -207,10 +206,10 @@ export default function Game() {
             }
           }
           enter = 1;
-      }
-      else if (responseData.status === 203) {
-        setrating(0);
-      }} else {
+        } else if (responseData.status === 203) {
+          setrating(0);
+        }
+      } else {
         console.error("Request failed. Status:", xhr.status);
       }
     };
@@ -229,9 +228,7 @@ export default function Game() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
-        if(data.status === 200)
-        {
-          console.log(data);
+        if (data.status === 200) {
           setnamegame(data.message.name);
           setdata(data.message.release_date);
           setdescription(removeHTMLTags(data.message.description));
@@ -240,21 +237,20 @@ export default function Game() {
             (item) => item.platform.name
           );
           setplatforms(platforms);
-          if(data.message.image!=null && data.message.imageadd != null ){
+          if (data.message.image != null && data.message.imageadd != null) {
             setimagegame(data.message.image);
             setimagegamebackground(data.message.imageadd);
-          }
-          else if(data.message.image!=null && data.message.imageadd == null )
-          {
+          } else if (
+            data.message.image != null &&
+            data.message.imageadd == null
+          ) {
             setimagegame(data.message.image);
             setimagegamebackground(data.message.image);
-          }
-          else{
+          } else {
             setimagegame(null);
             setimagegamebackground(null);
           }
         }
-        
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -263,8 +259,37 @@ export default function Game() {
       console.error("Request failed. Network error.");
     };
     xhr.send();
-
   }, [searchParams]);
+
+  function getReviews() {
+    const gameId = searchParams.get("id");
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://localhost:3000/games/${gameId}/reviews`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const responseData = JSON.parse(xhr.responseText);
+        if (responseData.status === 200) {
+          const reviews = responseData.reviewsgame;
+          setReviews(reviews);
+        }
+      } else {
+        console.error("Request failed. Status:", xhr.status);
+      }
+    };
+
+    xhr.onerror = () => {
+      console.error("Request failed. Network error.");
+    };
+
+    xhr.send();
+  }
+
+  useEffect(() => {
+    getReviews();
+  }, []);
 
   return (
     <>
@@ -272,16 +297,16 @@ export default function Game() {
       <div className="Appprinicipal">
         <div className="col-lg-3">
           <div class="img-container">
-          {imagegame!=null &&(
-            <div className="positioning" id ="positionimgid">
-              <h1 className="h2title">{namegame}</h1>
-              <p className="texttitle">
-                Released on <span className="textdata">{data} </span> by{" "}
-                <span className="texttitle1">{companyname} </span>
-              </p>
-            </div>
-              )}
-            {imagegame!=null &&(
+            {imagegame != null && (
+              <div className="positioning" id="positionimgid">
+                <h1 className="h2title">{namegame}</h1>
+                <p className="texttitle">
+                  Released on <span className="textdata">{data} </span> by{" "}
+                  <span className="texttitle1">{companyname} </span>
+                </p>
+              </div>
+            )}
+            {imagegame != null && (
               <div className="positionimggame" id="imagedivdisplay">
                 <img
                   src={imagegame}
@@ -291,7 +316,7 @@ export default function Game() {
                   alt="Logo Jogo"
                 ></img>
               </div>
-              )}
+            )}
             <div className="imagebackground">
               <img
                 src={imagegamebackground}
@@ -347,7 +372,9 @@ export default function Game() {
                   />
                 </div>
                 <div className="graph">
-                  <Bar data={graph} options={options} />
+                  <div>
+                    <Bar data={graph} options={options} />
+                  </div>
                   {ratings_count !== null &&
                   ratings_count !== "" &&
                   ratings_count !== undefined ? (
@@ -357,82 +384,49 @@ export default function Game() {
                   )}
                 </div>
               </div>
-            <div className="seconddiv">
-              <div>
-                <div className="gamebio">
-                  <p className="pmargin1" id="gamebio">
-                    {description}
-                  </p>
-                </div>
-                <div className="whereplay">
-                  <div>
-                    <h3>Playable on:</h3>
+              <div className="seconddiv">
+                <div>
+                  <div className="gamebio">
+                    <p className="pmargin1" id="gamebio">
+                      {description}
+                    </p>
                   </div>
-                  <div className="platforms">
-                    {Array.isArray(platforms) &&
-                      platforms.map((platform, index) => (
-                        <React.Fragment key={index}>
-                          <p className="pmargin1">{platform}</p>
-                          {index !== platforms.length - 1 && (
-                            <p className="pmargin1">,&nbsp;</p>
-                          )}
-                        </React.Fragment>
+                  <div className="whereplay">
+                    <div>
+                      <h3>Playable on:</h3>
+                    </div>
+                    <div className="platforms">
+                      {Array.isArray(platforms) &&
+                        platforms.map((platform, index) => (
+                          <React.Fragment key={index}>
+                            <p className="pmargin1">{platform}</p>
+                            {index !== platforms.length - 1 && (
+                              <p className="pmargin1">,&nbsp;</p>
+                            )}
+                          </React.Fragment>
+                        ))}
+                    </div>
+                  </div>
+                  <div className="seconddivgame">
+                    <div className="rectangles">
+                      <h3>Reviews:</h3>
+                      {reviews.map((review) => (
+                        <div className="rectanglecomments">
+                          <h3>{review.title}</h3>
+                          <p className="pmargin0">{review.text}</p>
+                          <div className="seconddivimage">
+                            <img
+                              img
+                              id="imgsource"
+                              src={kazzio}
+                              width="30"
+                              height="30"
+                              className="imagereview"
+                            ></img>
+                            <p className="pmargin0">{review.username}</p>
+                          </div>
+                        </div>
                       ))}
-                  </div>
-                </div>
-                <div className="seconddivgame">
-                  <div className="rectangles">
-                    <h3>Reviews:</h3>
-                    <div className="rectanglecomments">
-                      <h3>Melhor Jogo de Sempre</h3>
-                      <p className="pmargin0">
-                        Melhor jogo de sempre e de todo o sempre mesmo a sério
-                      </p>
-                      <div className="seconddivimage">
-                        <img
-                          img
-                          id="imgsource"
-                          src={kazzio}
-                          width="30"
-                          height="30"
-                          className="imagereview"
-                        ></img>
-                        <p className="pmargin0">kazzio</p>
-                      </div>
-                    </div>
-                    <div className="rectanglecomments">
-                      <h3>Melhor Jogo de Sempre</h3>
-                      <p className="pmargin0">
-                        Melhor jogo de sempre e de todo o sempre mesmo a sério
-                      </p>
-                      <div className="seconddivimage">
-                        <img
-                          img
-                          id="imgsource"
-                          src={kazzio}
-                          width="30"
-                          height="30"
-                          className="imagereview"
-                        ></img>
-                        <p className="pmargin0">kazzio</p>
-                      </div>
-                    </div>
-                    <div className="rectanglecomments">
-                      <h3>Melhor Jogo de Sempre</h3>
-                      <p className="pmargin0">
-                        Melhor jogo de sempre e de todo o sempre mesmo a sério
-                      </p>
-                      <div className="seconddivimage">
-                        <img
-                          img
-                          id="imgsource"
-                          src={kazzio}
-                          width="30"
-                          height="30"
-                          className="imagereview"
-                        ></img>
-                        <p className="pmargin0">kazzio</p>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -440,7 +434,6 @@ export default function Game() {
             </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   );

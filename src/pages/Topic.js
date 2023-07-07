@@ -45,7 +45,7 @@ export default function Topico() {
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
-        if(data.status === 200){
+        if (data.status === 200) {
           setnamegame(data.message.name);
           setdata(data.message.release_date);
           setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
@@ -56,7 +56,7 @@ export default function Topico() {
           } else {
             setimagegamebackground(data.message.image);
           }
-      }
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -108,7 +108,7 @@ export default function Topico() {
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
-        if(data.status === 200){
+        if (data.status === 200) {
           console.log(data);
           const createddata = data.message.topics.createdAt;
           const date = new Date(createddata);
@@ -152,7 +152,7 @@ export default function Topico() {
           setlike(data.message.topics.likes);
           setdislike(data.message.topics.dislikes);
           enter = 1;
-      }
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -183,7 +183,7 @@ export default function Topico() {
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
-        if(data.status === 200){   
+        if (data.status === 200) {
           console.log(data);
           setcommenttext((prevArray) => [...prevArray, text]);
           setcommentdate((prevArray) => [...prevArray, "just now"]);
@@ -191,7 +191,7 @@ export default function Topico() {
             ...prevArray,
             localStorage.getItem("username"),
           ]);
-      }
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }

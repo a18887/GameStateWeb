@@ -1,5 +1,5 @@
 import "./addgame.css";
-import { useEffect, useState,useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "./Header";
@@ -77,8 +77,7 @@ export default function Game() {
       if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
         console.log(data);
-        if(data.status === 200)
-        {
+        if (data.status === 200) {
           setnamegame(data.message.name);
           setdata(data.message.release_date);
           setdescription(removeHTMLTags(data.message.description));
@@ -87,16 +86,16 @@ export default function Game() {
             (item) => item.platform.name
           );
           setplatforms(platforms);
-          if(data.message.image!=null && data.message.imageadd != null ){
+          if (data.message.image != null && data.message.imageadd != null) {
             setimagegame(data.message.image);
             setimagegamebackground(data.message.imageadd);
-          }
-          else if(data.message.image!=null && data.message.imageadd == null )
-          {
+          } else if (
+            data.message.image != null &&
+            data.message.imageadd == null
+          ) {
             setimagegame(data.message.image);
             setimagegamebackground(data.message.image);
-          }
-          else{
+          } else {
             setimagegame(null);
             setimagegamebackground(null);
           }
@@ -151,10 +150,12 @@ export default function Game() {
       const data = JSON.parse(xhr.responseText);
       if (xhr.status === 201) {
         if (data.status === 200) {
-          console.log(data)
+          console.log(data);
+          navigate(-1);
+        } else {
+          alert(data.message);
           navigate(-1);
         }
-        console.log(data)
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -185,16 +186,16 @@ export default function Game() {
         <div className="Appprinicipal">
           <div className="col-lg-3">
             <div class="img-container">
-            {imagegame!=null &&(
-              <div className="positionimgtopic">
-                <h1 className="h2title">{namegame}</h1>
-                <p className="texttitle">
-                  Released on <span className="textdata">{data} </span> by{" "}
-                  <span className="texttitle1">{companyname} </span>
-                </p>
-              </div>
-               )}
-              {imagegame!=null &&(
+              {imagegame != null && (
+                <div className="positionimgtopic">
+                  <h1 className="h2title">{namegame}</h1>
+                  <p className="texttitle">
+                    Released on <span className="textdata">{data} </span> by{" "}
+                    <span className="texttitle1">{companyname} </span>
+                  </p>
+                </div>
+              )}
+              {imagegame != null && (
                 <div className="imggametopic">
                   <img
                     src={imagegame}
@@ -204,7 +205,7 @@ export default function Game() {
                     alt="Logo Jogo"
                   ></img>
                 </div>
-               )}
+              )}
               <div className="imagebackground">
                 <img
                   src={imagegamebackground}
@@ -231,7 +232,7 @@ export default function Game() {
             <div className="seconddivforum">
               <div className="forumbody">
                 <div className="rectanglesaddgame">
-                      <p
+                  <p
                     ref={errRef}
                     className={errMsg ? "errmsg" : "offscreen"}
                     aria-live="assertive"
@@ -322,14 +323,13 @@ export default function Game() {
                     </div>
                   </div>
                   <div id="submit">
-                  <input
-                    type="submit"
-                    id="createTopicButton"
-                    value="Make Review"
-                    onClick={createReview}
-                  />
+                    <input
+                      type="submit"
+                      id="createTopicButton"
+                      value="Make Review"
+                      onClick={createReview}
+                    />
                   </div>
-                  
                 </div>
               </div>
             </div>

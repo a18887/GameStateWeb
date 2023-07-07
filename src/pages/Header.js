@@ -80,10 +80,10 @@ export default function PrimarySearchAppBar() {
     setSearchValue(event.target.value);
   };
 
-  const logout = ()=>{
+  const logout = () => {
     localStorage.clear();
     navigate("/");
-  }
+  };
 
   const handleListItemClick = (id) => {
     navigate(`/gamepage?id=${id}`);
@@ -98,7 +98,11 @@ export default function PrimarySearchAppBar() {
   useEffect(() => {
     const fetchData = () => {
       const xhr = new XMLHttpRequest();
-      xhr.open("GET", "http://localhost:3000/games?search", true);
+      xhr.open(
+        "GET",
+        `http://localhost:3000/games?search=${searchValue}`,
+        true
+      );
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onload = () => {
         if (xhr.status === 200) {
@@ -195,9 +199,17 @@ export default function PrimarySearchAppBar() {
               </SearchResultList>
             )}
           </Search>
+          <a
+            style={{ color: "white", marginLeft: "16px" }}
+            onClick={() => navigate("/homepage")}
+          >
+            Homepage
+          </a>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <a style={{ color: "white", marginLeft: "16px" }}  onClick={logout}>Logout</a>
+            <a style={{ color: "white", marginLeft: "16px" }} onClick={logout}>
+              Logout
+            </a>
           </Box>
         </Toolbar>
       </AppBar>

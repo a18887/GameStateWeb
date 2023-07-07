@@ -12,7 +12,7 @@ import stop from "../img/stop.png";
 import star from "./../img/star1.png";
 import image from "./../img/imagegame.png";
 
-export default function Profil() {
+export default function Profile() {
   const navigate = useNavigate();
   const [userdata, setuserdata] = useState([]);
   const [usercountry, setusercountry] = useState([]);
@@ -30,8 +30,8 @@ export default function Profil() {
   const [lasttopicimage, setLastTopicImage] = useState([]);
   const [topiclastdata, settopiclastdata] = useState([]);
   const [topicGameNames, setTopicGameNames] = useState([]);
-  const [wislistuser,setwishlistuser] = useState([]);
-  const [wishlistnumber,setwishlistnumber] = useState([]);
+  const [wislistuser, setwishlistuser] = useState([]);
+  const [wishlistnumber, setwishlistnumber] = useState([]);
 
   function convertmesday(mes) {
     if (mes == 1) {
@@ -62,17 +62,19 @@ export default function Profil() {
   }
   function getUser() {
     const id = localStorage.getItem("id");
+    console.log("ola" + id);
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/users/${id}`, true);
     const token = localStorage.getItem("token");
+    console.log("ola" + token);
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        if(responseData.status === 200)
-        {
+        if (responseData.status === 200) {
           const createddata = responseData.message.createdAt;
+          console.log("ola" + createddata);
           const date = new Date(createddata);
           const formattedDate = {
             day: date.getDate(),
@@ -83,7 +85,6 @@ export default function Profil() {
           setusercountry(responseData.message.country);
           console.log(responseData);
         }
-        
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -105,15 +106,14 @@ export default function Profil() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        if(responseData.status === 200)
-        {
+        if (responseData.status === 200) {
           const subscribedGames = responseData.subscribedgames;
           const subscribedRatings = responseData.ratings;
           const subscribedStatus = responseData.gameStatus;
           setSubscribedGames(subscribedGames.subscribedgames);
           setSubscribedRatings(subscribedRatings.ratings);
           setSubscribedStatus(subscribedStatus.gameStatus);
-      }
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -136,21 +136,22 @@ export default function Profil() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        if(responseData.status === 200)
-        {
+        if (responseData.status === 200) {
           const reviews = responseData.reviewsbyusernames;
-          const lastReview = reviews[reviews.length - 1];
-          console.log(lastReview);
-          const createddata = lastReview.createdAt;
-          const date = new Date(createddata);
-          const formattedDate = {
-            day: date.getDate(),
-            month: convertmesday(date.getMonth() + 1),
-            year: date.getFullYear(),
-          };
-          setreviewlastdata(formattedDate);
-          setLastReview(lastReview);
-          setReviews(reviews);
+          if (reviews.length > 0) {
+            const lastReview = reviews[reviews.length - 1];
+            console.log(lastReview);
+            const createddata = lastReview.createdAt;
+            const date = new Date(createddata);
+            const formattedDate = {
+              day: date.getDate(),
+              month: convertmesday(date.getMonth() + 1),
+              year: date.getFullYear(),
+            };
+            setreviewlastdata(formattedDate);
+            setLastReview(lastReview);
+            setReviews(reviews);
+          }
         }
       } else {
         console.error("Request failed. Status:", xhr.status);
@@ -175,30 +176,31 @@ export default function Profil() {
         const responseData = JSON.parse(xhr.responseText);
 
         console.log(responseData);
-       
-        if(responseData.status === 200)
-        {
+
+        if (responseData.status === 200) {
           const topics = responseData.message.topics;
-          const lastTopic = topics[topics.length - 1];
-          setLastTopic(lastTopic);
-          const createddata = lastTopic.createdAt;
-          const date = new Date(createddata);
-          const formattedDate = {
-            day: date.getDate(),
-            month: convertmesday(date.getMonth() + 1),
-            year: date.getFullYear(),
-          };
-          settopiclastdata(formattedDate);
-          setTopics(topics);
+          if (topics.length > 0) {
+            const lastTopic = topics[topics.length - 1];
+            setLastTopic(lastTopic);
+            const createddata = lastTopic.createdAt;
+            const date = new Date(createddata);
+            const formattedDate = {
+              day: date.getDate(),
+              month: convertmesday(date.getMonth() + 1),
+              year: date.getFullYear(),
+            };
+            settopiclastdata(formattedDate);
+            setTopics(topics);
 
-          const names = responseData.message.names;
-          const images = responseData.message.images;
+            const names = responseData.message.names;
+            const images = responseData.message.images;
 
-          setTopicGameNames(names);
+            setTopicGameNames(names);
 
-          setTopicImages(images);
-          setLastTopicImage(images[images.length - 1]);
-      }
+            setTopicImages(images);
+            setLastTopicImage(images[images.length - 1]);
+          }
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -221,18 +223,17 @@ export default function Profil() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        if(responseData.status === 200)
-        {
-          if(responseData.wishlistbyusernames.length>0)
-          {
+        if (responseData.status === 200) {
+          if (responseData.wishlistbyusernames.length > 0) {
             const wishlist = responseData.wishlistbyusernames;
             setwishlistnumber(wishlist);
-            for(let i= 0;i<responseData.wishlistbyusernames.length;i++)
-            {
+            for (let i = 0; i < responseData.wishlistbyusernames.length; i++) {
               console.log(responseData.wishlistbyusernames[i].image);
-              setwishlistuser((prevArray) => [...prevArray,responseData.wishlistbyusernames[i].image]);
+              setwishlistuser((prevArray) => [
+                ...prevArray,
+                responseData.wishlistbyusernames[i].image,
+              ]);
             }
-        
           }
         }
       } else {
@@ -434,15 +435,18 @@ export default function Profil() {
             <Grid xs={12} sm={6} md={3}>
               <h1>Wishlist</h1>
               <Grid container spacing={5}>
-              {wishlistnumber.map((wishlist,index) => (
-                <Grid xs={12} sm={6} key={wishlist._id}>
+                {wishlistnumber.map((wishlist, index) => (
+                  <Grid xs={12} sm={6} key={wishlist._id}>
                     <div className={styles.frameGameImage}>
-                      <img src={wishlist.image} alt="game" id={styles.subscribedGames} />
+                      <img
+                        src={wishlist.image}
+                        alt="game"
+                        id={styles.subscribedGames}
+                      />
                     </div>
-                </Grid>
-              ))}
+                  </Grid>
+                ))}
               </Grid>
-          
             </Grid>
             <Grid xs={12} sm={6} md={3}>
               <h1>Topics</h1>
