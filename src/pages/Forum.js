@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "./forum.css";
 import kazzio from "../img/kazzio.png";
-import pfp from "./../img/user.png";
 import Header from "./Header";
-import mapImg from "../img/mapImg.png";
 
 export default function Forum() {
   const [topictext, settopictext] = useState([]);
@@ -19,15 +17,12 @@ export default function Forum() {
   const [ratings_count, setrating] = useState("");
   const [companyname, setcompanygame] = useState("");
   const [imagegame, setimagegame] = useState("");
-  const [searchParams] = useSearchParams();
   const [imagegamebackground, setimagegamebackground] = useState("");
   const [description, setdescription] = useState("");
   const [platforms, setplatforms] = useState("");
   const [gameId, setGameId] = useState("");
-
+  const params = useParams();
   const navigate = useNavigate();
-
-  const topic_id = "649db41b60116fbbd903d104";
 
   function removeHTMLTags(text) {
     const tempElement = document.createElement("div");
@@ -36,17 +31,16 @@ export default function Forum() {
   }
 
   function gamepage() {
-    navigate(`/gamepage?id=${searchParams.get("id")}`);
+    navigate(`/games/${params.id}`);
   }
 
   function createTopic() {
-    navigate(`/createtopic?id=${searchParams.get("id")}`);
+    navigate(`/forums/createtopic?game_id=${params.id}`);
   }
 
   useEffect(() => {
-    const id = searchParams.get("id");
+    const id = params.id;
     setGameId(id);
-    console.log(id);
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -54,7 +48,6 @@ export default function Forum() {
       if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
         if (data.status === 200) {
-          console.log(data);
           setnamegame(data.message.name);
           setrating(data.message.ratings_count);
           setdata(data.message.release_date);
@@ -118,7 +111,7 @@ export default function Forum() {
   }
 
   function getTopics() {
-    const id = searchParams.get("id");
+    const id = params.id;
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}/topics`, true);
     const token = localStorage.getItem("token");
@@ -128,11 +121,8 @@ export default function Forum() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
-        console.log("teste");
-        console.log(data);
         if (data.status === 200) {
           settopics(data.topics);
-          console.log("ola" + topics);
 
           for (let i = 0; i < data.topics.length; i++) {
             settopictitle((prevArray) => [...prevArray, data.topics[i].name]);
@@ -172,7 +162,7 @@ export default function Forum() {
         <Header></Header>
         <div className="Appprinicipal">
           <div className="col-lg-3">
-            <div class="img-container">
+            <div className="img-container">
               {imagegame != null && (
                 <div className="positionimgtopic">
                   <h1 className="h2title">{namegame}</h1>
@@ -234,7 +224,6 @@ export default function Forum() {
                     type="submit"
                     className="buttonsclasscreatetopic"
                     onClick={createTopic}
-                    n
                     name="log"
                     id="log"
                     value="CREATE TOPIC"
@@ -242,19 +231,19 @@ export default function Forum() {
                 </div>
                 <div className="rectangles">
                   <h3>Topics:</h3>
-                  {topics.map((topic) => (
+                  {topics.map((topic, index) => (
                     <div
                       className="rectanglecomments"
                       id="rectanglecommentsForum"
                       onClick={() =>
-                        navigate(`/topicpage?id=${topic._id}&game_id=${gameId}`)
+                        navigate(`/topics/${topic._id}?game_id=${gameId}`)
                       }
+                      key={index}
                     >
                       <h3>{topic.name}</h3>
                       <p className="pmargin0">{topic.text}</p>
                       <div className="seconddivimage">
                         <img
-                          img
                           id="imgsource"
                           src={kazzio}
                           width="30"

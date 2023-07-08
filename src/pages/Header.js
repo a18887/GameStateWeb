@@ -205,6 +205,12 @@ export default function PrimarySearchAppBar() {
           >
             Homepage
           </a>
+          <a
+            style={{ color: "white", marginLeft: "25px" }}
+            onClick={() => navigate("/library")}
+          >
+            Library
+          </a>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <a style={{ color: "white", marginLeft: "16px" }} onClick={logout}>

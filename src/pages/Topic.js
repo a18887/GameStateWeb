@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "./topic.css";
 import pfp from "./../img/user.png";
-import like from "../img/like.png";
-import dislike from "../img/dislike.png";
 import Header from "./Header";
 var enter = 0;
-var enter1 = 0;
+
 export default function Topico() {
   const [namegame, setnamegame] = useState("");
   const [data, setdata] = useState("");
@@ -30,20 +28,20 @@ export default function Topico() {
   const [imagegamebackground, setimagegamebackground] = useState("");
   const [searchParams] = useSearchParams();
   const [timedata, settimedata] = useState("");
+  const params = useParams();
   const navigate = useNavigate();
-  const topic_id = "649c164f3f46c9ce0b95d05d";
 
   function gamepage() {
-    navigate(`/gamepage?id=${searchParams.get("id")}`);
+    navigate(`/games/${searchParams.get("game_id")}`);
   }
 
   useEffect(() => {
-    const id = searchParams.get("id");
+    const gameId = searchParams.get("game_id");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/game/searchbyid", true);
+    xhr.open("GET", `http://localhost:3000/games/${gameId}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
         if (data.status === 200) {
           setnamegame(data.message.name);
@@ -64,12 +62,8 @@ export default function Topico() {
     xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
-    const jsonData = {
-      id,
-    };
 
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
+    xhr.send();
   }, [searchParams]);
 
   function convertmesday(mes) {
@@ -99,17 +93,18 @@ export default function Topico() {
       return "Dec";
     }
   }
+
   useEffect(() => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/topic/searchbytopicid", true);
     const token = localStorage.getItem("token");
+    const id = params.id;
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://localhost:3000/topics/${id}`, true);
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
-      if (xhr.status === 201) {
+      if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
         if (data.status === 200) {
-          console.log(data);
           const createddata = data.message.topics.createdAt;
           const date = new Date(createddata);
 
@@ -160,13 +155,9 @@ export default function Topico() {
     xhr.onerror = () => {
       console.error("Request failed. Network error.");
     };
-    const jsonData = {
-      topic_id,
-    };
 
-    const payload = JSON.stringify(jsonData);
-    xhr.send(payload);
-  }, [topic_id]);
+    xhr.send();
+  }, []);
 
   for (let i = 0; i < commenttext.length; i++) {
     divisions.push(<div key={i}></div>);
@@ -175,8 +166,9 @@ export default function Topico() {
   const commentinput = async (e) => {
     e.preventDefault();
     const user_id = commentuserid;
+    const topic_id = params.id;
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/topic/createcomment", true);
+    xhr.open("POST", "http://localhost:3000/topics/comments", true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -184,13 +176,9 @@ export default function Topico() {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
         if (data.status === 200) {
-          console.log(data);
           setcommenttext((prevArray) => [...prevArray, text]);
           setcommentdate((prevArray) => [...prevArray, "just now"]);
-          setcommentusername((prevArray) => [
-            ...prevArray,
-            localStorage.getItem("username"),
-          ]);
+          setcommentusername((prevArray) => [...prevArray, username]);
         }
       } else {
         console.error("Request failed. Status:", xhr.status);
@@ -224,18 +212,18 @@ export default function Topico() {
   }
 
   const likedislikefunc = () => {
+    const topic_id = params.id;
     const likes = like;
     const dislikes = dislike;
     const likeDislike = likedislike;
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/topic/likedislike", true);
+    xhr.open("POST", "http://localhost:3000/topics/likedislike", true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 201) {
         const data = JSON.parse(xhr.responseText);
-        console.log(data);
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -266,7 +254,7 @@ export default function Topico() {
       <Header></Header>
       <div className="Appprinicipal">
         <div className="col-lg-3">
-          <div class="img-container">
+          <div className="img-container">
             <div className="positionimgtopic">
               <h1 className="h2title">{namegame}</h1>
               <p className="texttitle">
@@ -323,15 +311,15 @@ export default function Topico() {
                 <p className="topictextreview">{topictext}</p>
               </div>
               <div className="btnlikesdislikes">
-                <button class="like__btn" onClick={likefunction}>
+                <button className="like__btn" onClick={likefunction}>
                   <span id="icon">
-                    <i class="fa fa-thumbs-up"></i>
+                    <i className="fa fa-thumbs-up"></i>
                   </span>
                   <span id="count">{like}</span>
                 </button>
-                <button class="dislike__btn" onClick={dislikefunction}>
+                <button className="dislike__btn" onClick={dislikefunction}>
                   <span id="icon">
-                    <i class="fa fa-thumbs-down"></i>
+                    <i className="fa fa-thumbs-down"></i>
                   </span>
                   <span id="count">{dislike}</span>
                 </button>
@@ -342,7 +330,7 @@ export default function Topico() {
                   cols="10"
                   placeholder="Write a comment"
                   id="buttoncomment"
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(e) => settext(e.target.value)}
                   value={text}
                 />

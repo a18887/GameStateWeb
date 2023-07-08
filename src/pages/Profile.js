@@ -10,7 +10,6 @@ import playbutton from "../img/playbutton.png";
 import pause from "../img/pause.png";
 import stop from "../img/stop.png";
 import star from "./../img/star1.png";
-import image from "./../img/imagegame.png";
 
 export default function Profile() {
   const navigate = useNavigate();

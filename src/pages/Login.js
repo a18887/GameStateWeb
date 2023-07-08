@@ -34,7 +34,6 @@ export default function Login() {
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
       if (xhr.status === 201) {
-        console.log(data);
         if (data.status == 200) {
           localStorage.setItem("id", data.id);
           localStorage.setItem("user", data.username);
@@ -98,7 +97,7 @@ export default function Login() {
                   name="username"
                   id="username"
                   placeholder="Username"
-                  autocomplete="off"
+                  autoComplete="off"
                   ref={userRef}
                   onChange={(e) => setusername(e.target.value)}
                   value={username}
@@ -113,7 +112,7 @@ export default function Login() {
                   name="password"
                   id="password"
                   placeholder="Password"
-                  autocomplete="off"
+                  autoComplete="off"
                   onChange={(e) => setpassword(e.target.value)}
                   value={password}
                 />

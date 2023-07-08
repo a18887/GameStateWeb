@@ -32,16 +32,15 @@ export default function Library() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        console.log(responseData)
-        if(responseData.status === 200)
-        {
+        console.log(responseData);
+        if (responseData.status === 200) {
           const subscribedGames = responseData.subscribedgames;
           const subscribedRatings = responseData.ratings;
           const subscribedStatus = responseData.gameStatus;
           setSubscribedGames(subscribedGames.subscribedgames);
           setSubscribedRatings(subscribedRatings.ratings);
           setSubscribedStatus(subscribedStatus.gameStatus);
-      }
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -64,11 +63,10 @@ export default function Library() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        if(responseData.status === 200)
-        {
+        if (responseData.status === 200) {
           const reviews = responseData.reviewsbyusernames;
           setReviews(reviews);
-        } 
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -91,14 +89,14 @@ export default function Library() {
     xhr.onload = () => {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
-        if(responseData.status === 200){
+        if (responseData.status === 200) {
           const topics = responseData.message.topics;
           const names = responseData.message.names;
           const images = responseData.message.images;
           setTopics(topics);
           setTopicGameNames(names);
           setTopicImages(images);
-        }     
+        }
       } else {
         console.error("Request failed. Status:", xhr.status);
       }
@@ -120,7 +118,7 @@ export default function Library() {
   useEffect(() => {
     const images = subscribedGames.filter((_, index) => index % 2 === 0);
     const id = subscribedGames.filter((_, index) => index % 2 === 1);
-    console.log(images)
+    console.log(images);
     setSubscribedImages(images.slice(0, 6));
     setSubscribedID(id.slice(0, 6));
   }, [subscribedGames]);
@@ -151,7 +149,7 @@ export default function Library() {
           {subscribedImages.map((image, index) => (
             <div
               className={styles.frame}
-              onClick={() => navigate(`/gamepage?id=${subscribedID[index]}`)}
+              onClick={() => navigate(`/games/${subscribedID[index]}`)}
               key={subscribedID[index]}
             >
               <div className={styles.frameGameImage}>
@@ -199,7 +197,11 @@ export default function Library() {
                         src={topicImages[index]}
                         alt="game"
                         id={styles.game}
-                        onClick={() => navigate(`/topicpage?id=${topic._id}`)}
+                        onClick={() =>
+                          navigate(
+                            `/topics/${topic._id}?game_id=${topic.forum_id}`
+                          )
+                        }
                       />
                       <div>
                         <p className={styles.text}>{topic.name}</p>

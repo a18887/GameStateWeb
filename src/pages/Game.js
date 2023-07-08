@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./gamepage.css";
 import kazzio from "../img/kazzio.png";
 import wishlist from "../img/buttonwishlist.png";
@@ -30,7 +30,7 @@ export default function Game() {
   const [description, setdescription] = useState("");
   const [platforms, setplatforms] = useState("");
   const [reviews, setReviews] = useState([]);
-  const [searchParams] = useSearchParams();
+  const params = useParams();
   const navigate = useNavigate();
   const data1 = Array(10).fill(0);
 
@@ -57,13 +57,6 @@ export default function Game() {
         min: 0, // Set the minimum value for the y-axis
         max: 10, // Set the maximum value for the y-axis
       },
-      xAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-          },
-        },
-      ],
     },
   };
 
@@ -74,15 +67,15 @@ export default function Game() {
   }
 
   function forumpage() {
-    navigate(`/forum?id=${searchParams.get("id")}`);
+    navigate(`/forums/${params.id}`);
   }
 
   function reviewgamepage() {
-    navigate(`/reviewgame?id=${searchParams.get("id")}`);
+    navigate(`/games/${params.id}/review`);
   }
 
   function removeWishlistGame() {
-    const game_id = searchParams.get("id");
+    const game_id = params.id;
     const user_id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
     xhr.open(
@@ -110,7 +103,7 @@ export default function Game() {
   }
 
   function addWishlistGame() {
-    const game_id = searchParams.get("id");
+    const game_id = params.id;
     const user_id = localStorage.getItem("id");
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `http://localhost:3000/users/${user_id}/wishlist`, true);
@@ -144,8 +137,75 @@ export default function Game() {
     xhr.send(payload);
   }
 
-  useEffect(() => {
-    const id = searchParams.get("id");
+  function getReviews() {
+    const gameId = params.id;
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://localhost:3000/games/${gameId}/reviews`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const responseData = JSON.parse(xhr.responseText);
+        if (responseData.status === 200) {
+          const reviews = responseData.reviewsgame;
+          setReviews(reviews);
+        }
+      } else {
+        console.error("Request failed. Status:", xhr.status);
+      }
+    };
+
+    xhr.onerror = () => {
+      console.error("Request failed. Network error.");
+    };
+
+    xhr.send();
+  }
+
+  function getGames() {
+    const id = params.id;
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://localhost:3000/games/${id}`, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        if (data.status === 200) {
+          setnamegame(data.message.name);
+          setdata(data.message.release_date);
+          setdescription(removeHTMLTags(data.message.description));
+          setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
+          const platforms = data.message.platforms.map(
+            (item) => item.platform.name
+          );
+          setplatforms(platforms);
+          if (data.message.image != null && data.message.imageadd != null) {
+            setimagegame(data.message.image);
+            setimagegamebackground(data.message.imageadd);
+          } else if (
+            data.message.image != null &&
+            data.message.imageadd == null
+          ) {
+            setimagegame(data.message.image);
+            setimagegamebackground(data.message.image);
+          } else {
+            setimagegame(null);
+            setimagegamebackground(null);
+          }
+        }
+      } else {
+        console.error("Request failed. Status:", xhr.status);
+      }
+    };
+    xhr.onerror = () => {
+      console.error("Request failed. Network error.");
+    };
+    xhr.send();
+  }
+
+  function getRatingReviews() {
+    const id = params.id;
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}/reviews`, true);
     const token = localStorage.getItem("token");
@@ -218,77 +278,12 @@ export default function Game() {
     };
 
     xhr.send();
-  }, [searchParams]);
-
-  useEffect(() => {
-    const id = searchParams.get("id");
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:3000/games/${id}`, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        const data = JSON.parse(xhr.responseText);
-        if (data.status === 200) {
-          setnamegame(data.message.name);
-          setdata(data.message.release_date);
-          setdescription(removeHTMLTags(data.message.description));
-          setcompanygame(data.message.developers.map((dev) => dev.name)[0]);
-          const platforms = data.message.platforms.map(
-            (item) => item.platform.name
-          );
-          setplatforms(platforms);
-          if (data.message.image != null && data.message.imageadd != null) {
-            setimagegame(data.message.image);
-            setimagegamebackground(data.message.imageadd);
-          } else if (
-            data.message.image != null &&
-            data.message.imageadd == null
-          ) {
-            setimagegame(data.message.image);
-            setimagegamebackground(data.message.image);
-          } else {
-            setimagegame(null);
-            setimagegamebackground(null);
-          }
-        }
-      } else {
-        console.error("Request failed. Status:", xhr.status);
-      }
-    };
-    xhr.onerror = () => {
-      console.error("Request failed. Network error.");
-    };
-    xhr.send();
-  }, [searchParams]);
-
-  function getReviews() {
-    const gameId = searchParams.get("id");
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://localhost:3000/games/${gameId}/reviews`, true);
-    const token = localStorage.getItem("token");
-    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        const responseData = JSON.parse(xhr.responseText);
-        if (responseData.status === 200) {
-          const reviews = responseData.reviewsgame;
-          setReviews(reviews);
-        }
-      } else {
-        console.error("Request failed. Status:", xhr.status);
-      }
-    };
-
-    xhr.onerror = () => {
-      console.error("Request failed. Network error.");
-    };
-
-    xhr.send();
   }
 
   useEffect(() => {
     getReviews();
+    getGames();
+    getRatingReviews();
   }, []);
 
   return (
@@ -296,7 +291,7 @@ export default function Game() {
       <Header></Header>
       <div className="Appprinicipal">
         <div className="col-lg-3">
-          <div class="img-container">
+          <div className="img-container">
             {imagegame != null && (
               <div className="positioning" id="positionimgid">
                 <h1 className="h2title">{namegame}</h1>
@@ -347,7 +342,6 @@ export default function Game() {
                     type="submit"
                     className="buttonsclass"
                     onClick={forumpage}
-                    n
                     name="log"
                     id="log"
                     value="Forum"
@@ -410,13 +404,12 @@ export default function Game() {
                   <div className="seconddivgame">
                     <div className="rectangles">
                       <h3>Reviews:</h3>
-                      {reviews.map((review) => (
-                        <div className="rectanglecomments">
+                      {reviews.map((review, index) => (
+                        <div className="rectanglecomments" key={index}>
                           <h3>{review.title}</h3>
                           <p className="pmargin0">{review.text}</p>
                           <div className="seconddivimage">
                             <img
-                              img
                               id="imgsource"
                               src={kazzio}
                               width="30"

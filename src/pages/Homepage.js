@@ -21,7 +21,6 @@ export default function Homepage() {
       if (xhr.status === 200) {
         const responseData = JSON.parse(xhr.responseText);
         const responseArray = responseData.populargames;
-        console.log(responseData)
         setPopularGames(responseArray);
       } else {
         console.error("Request failed. Status:", xhr.status);
@@ -88,14 +87,12 @@ export default function Homepage() {
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
-      console.log(data.status);
       if (xhr.status === 200) {
         if (data.status === 200) {
           const responseArray = data.message;
           const updatedArray = responseArray.slice(0, 9).map((item) => {
             const dateStr = item.createdAt;
             const date = new Date(dateStr).toISOString().split("T")[0];
-            console.log(date);
 
             return {
               ...item,
@@ -137,12 +134,12 @@ export default function Homepage() {
         <div className={styles.popular}>
           <h1>Popular Games</h1>
           {popularImages.map((image, index) => (
-            <div className={styles.frame} key={popularID[index]}>
+            <div className={styles.frame} key={index}>
               <img
                 src={image}
                 alt="game"
                 id={styles.populargame}
-                onClick={() => navigate(`/gamepage?id=${popularID[index]}`)}
+                onClick={() => navigate(`/games/${popularID[index]}`)}
               />
             </div>
           ))}
@@ -157,7 +154,7 @@ export default function Homepage() {
                     src={game.image}
                     alt="game"
                     id={styles.game}
-                    onClick={() => navigate(`/gamepage?id=${game.id}`)}
+                    onClick={() => navigate(`/games/${game.id}`)}
                   />
                   <div>
                     <p className={styles.text}>{game.name}</p>
@@ -168,13 +165,13 @@ export default function Homepage() {
             </Grid>
             <Grid xs={12} sm={6} md={4}>
               <h1>Upcoming Releases</h1>
-              {upcomingGames.map((game) => (
-                <div className={styles.frame2}>
+              {upcomingGames.map((game, index) => (
+                <div className={styles.frame2} key={index}>
                   <img
                     src={game.image}
                     alt="game"
                     id={styles.game}
-                    onClick={() => navigate(`/gamepage?id=${game.id}`)}
+                    onClick={() => navigate(`/games/${game.id}`)}
                   />
                   <div>
                     <p className={styles.text}>{game.name}</p>
@@ -185,14 +182,12 @@ export default function Homepage() {
             </Grid>
             <Grid xs={12} sm={6} md={4}>
               <h1>Recent Reviews</h1>
-              {recentlyReviewedGames.map((review) => (
-                <div className={styles.frame2}>
+              {recentlyReviewedGames.map((review, index) => (
+                <div className={styles.frame2} key={index}>
                   <div>
                     <p
                       className={styles.text}
-                      onClick={() =>
-                        navigate(`/gamepage?id=${review.forum_id}`)
-                      }
+                      onClick={() => navigate(`/games/${review.forum_id}`)}
                     >
                       {review.title}
                     </p>

@@ -19,13 +19,12 @@ export default function App() {
       <Route path="/forgotpassword" element={<Forgotpass />} />
       <Route path="/homepage" element={<Homepage />} />
       <Route path="/library" element={<Library />} />
-      <Route path="/gamepage" element={<Game />} />
-      <Route path="/createtopic" element={<CreateTopic />} />
-      <Route path="/gamepage" element={<Game />} />
-      <Route path="/topicpage" element={<Topic />} />
+      <Route path="/games/:id" element={<Game />} />
+      <Route path="/forums/createtopic" element={<CreateTopic />} />
+      <Route path="/topics/:id" element={<Topic />} />
       <Route path="/profilepage" element={<Profile />} />
-      <Route path="/reviewgame" element={<AddGame />} />
-      <Route path="/forum" element={<Forum />} />
+      <Route path="/games/:id/review" element={<AddGame />} />
+      <Route path="/forums/:id" element={<Forum />} />
     </Routes>
   );
 }

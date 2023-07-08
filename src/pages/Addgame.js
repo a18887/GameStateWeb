@@ -1,7 +1,7 @@
 import "./addgame.css";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Header from "./Header";
 import finished from "./../img/accept.png";
 import pause from "./../img/pause.png";
@@ -28,12 +28,11 @@ export default function Game() {
 
   const [errMsg, setErrMsg] = useState("");
 
+  const params = useParams();
   const navigate = useNavigate();
 
   const handleRatingChange = (e, value) => {
     setRating(value);
-    console.log(value);
-    // You can perform additional actions based on the selected rating
   };
 
   const handleTitleChange = (e) => {
@@ -64,19 +63,17 @@ export default function Game() {
   }
 
   function gamepage() {
-    navigate("/gamepage");
+    navigate(`/games/${params.id}`);
   }
 
   useEffect(() => {
-    const id = searchParams.get("id");
-    console.log(id);
+    const id = params.id;
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
-        console.log(data);
         if (data.status === 200) {
           setnamegame(data.message.name);
           setdata(data.message.release_date);
@@ -130,7 +127,7 @@ export default function Game() {
 
   const createReview = async (e) => {
     e.preventDefault();
-    const forum_id = searchParams.get("id");
+    const forum_id = params.id;
     const user_id = localStorage.getItem("id");
     if (!forum_id || !user_id) {
       alert("Unknown error");
@@ -150,7 +147,6 @@ export default function Game() {
       const data = JSON.parse(xhr.responseText);
       if (xhr.status === 201) {
         if (data.status === 200) {
-          console.log(data);
           navigate(-1);
         } else {
           alert(data.message);
@@ -176,7 +172,6 @@ export default function Game() {
 
     const payload = JSON.stringify(jsonData);
     xhr.send(payload);
-    console.log("Enviado!");
   };
 
   return (
@@ -185,7 +180,7 @@ export default function Game() {
         <Header></Header>
         <div className="Appprinicipal">
           <div className="col-lg-3">
-            <div class="img-container">
+            <div className="img-container">
               {imagegame != null && (
                 <div className="positionimgtopic">
                   <h1 className="h2title">{namegame}</h1>
