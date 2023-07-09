@@ -167,6 +167,8 @@ export default function Game() {
     const id = params.id;
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {

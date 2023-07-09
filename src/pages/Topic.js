@@ -13,15 +13,18 @@ export default function Topico() {
   const [imagegame, setimagegame] = useState("");
   const [topictext, settopictext] = useState("");
   const [topictitle, settopictitle] = useState("");
-  const [like, setlike] = useState("");
-  const [dislike, setdislike] = useState("");
-  const username = localStorage.getItem("user");
+  const [like, setlike] = useState(0);
+  const [dislike, setdislike] = useState(0);
+  const [numlikes, setnumlikes] = useState(0);
+  const [numdislikes, setnumdislikes] = useState(0);
   var likedislike = 0;
+  const username = localStorage.getItem("user");
   const [usernameLD, setusernameLD] = useState("");
   const [usernametopic, setusernametopic] = useState("");
   const [text, settext] = useState("");
   const [commenttext, setcommenttext] = useState([]);
   const divisions = [];
+  const [isClickedf, setIsClickedf] = useState(false);
   const [commentusername, setcommentusername] = useState([]);
   const [commentuserid, setcommentuserid] = useState("");
   const [commentdate, setcommentdate] = useState([]);
@@ -39,6 +42,8 @@ export default function Topico() {
     const gameId = searchParams.get("game_id");
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${gameId}`, true);
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = () => {
       if (xhr.status === 200) {
@@ -139,13 +144,20 @@ export default function Topico() {
             }
 
             for (let i = 0; i < data.message.topics.likeDislike.length; i++) {
+             
               if (data.message.topics.likeDislike[i].username == username) {
+                console.log(data.message.topics.likeDislike[i].likeDislike)
+                setnumlikes(data.message.topics.likes);
+                setnumdislikes(data.message.topics.dislikes)
                 setusernameLD(username);
               }
             }
           }
+          
           setlike(data.message.topics.likes);
           setdislike(data.message.topics.dislikes);
+
+          
           enter = 1;
         }
       } else {
@@ -197,25 +209,17 @@ export default function Topico() {
     xhr.send(payload);
   };
 
-  useEffect(() => {
-    if (like == 0 && dislike == 0) {
-      likedislike = 0;
-    } else {
-      likedislike = 1;
-    }
-    likedislikefunc();
-  }, [like, dislike]);
 
-  function likefunction() {
-    setlike((prevLike) => (prevLike + 1) % 2);
-    setdislike(0);
-  }
 
-  const likedislikefunc = () => {
+  const likedislikefunction = () => {
+    console.log(like)
+    console.log(dislike)   
     const topic_id = params.id;
     const likes = like;
     const dislikes = dislike;
     const likeDislike = likedislike;
+    console.log(likeDislike) 
+
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "http://localhost:3000/topics/likedislike", true);
     const token = localStorage.getItem("token");
@@ -242,11 +246,49 @@ export default function Topico() {
 
     const payload = JSON.stringify(jsonData);
     xhr.send(payload);
+  
+    
   };
 
+  function likefunction() {
+    setIsClickedf(true);
+    const updatedLike = (numlikes + 1) ;
+    console.log(numlikes)
+    console.log(updatedLike)
+    setlike(updatedLike);
+    setdislike(numdislikes)
+    
+   
+  }
+
+
+  useEffect(()=>
+  {
+    if (isClickedf) {
+      console.log(like)
+      console.log(dislike)
+      if(like === 0 && dislike === 0)
+      {
+        likedislike = 0
+      }
+      else{
+        likedislike = 1
+      }
+    likedislikefunction();
+    }
+  
+  },[like,dislike])
+
   function dislikefunction() {
-    setdislike((prevLike) => (prevLike + 1) % 2);
-    setlike(0);
+    setIsClickedf(true)
+    const updatedLike = (numdislikes + 1) ;
+    console.log(numdislikes)
+    console.log(updatedLike)
+    setdislike(updatedLike);
+
+
+    setlike(numlikes)
+ 
   }
 
   return (

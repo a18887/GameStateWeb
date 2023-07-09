@@ -80,10 +80,11 @@ export default function CreateTopic() {
 
   useEffect(() => {
     const id = searchParams.get("game_id");
-
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/games/${id}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
+    const token = localStorage.getItem("token");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.onload = () => {
       const data = JSON.parse(xhr.responseText);
       if (xhr.status === 200) {
