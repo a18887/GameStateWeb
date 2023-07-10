@@ -326,7 +326,7 @@ export default function Profile() {
                         alt="game"
                         id={styles.subscribedGames}
                         onClick={() =>
-                          navigate(`/gamepage?id=${lastreview.forum_id}`)
+                          navigate(`/games/${lastreview.forum_id}`)
                         }
                       />
                     </div>
@@ -390,7 +390,7 @@ export default function Profile() {
                         alt="game"
                         id={styles.subscribedGames}
                         onClick={() =>
-                          navigate(`/gamepage?id=${subscribedID[index]}`)
+                          navigate(`/games/${subscribedID[index]}`)
                         }
                       />
                       <img
@@ -418,7 +418,7 @@ export default function Profile() {
                         alt="game"
                         id={styles.subscribedGames}
                         onClick={() =>
-                          navigate(`/gamepage?id=${review.forum_id}`)
+                          navigate(`/games/${review.forum_id}`)
                         }
                       />
                     </div>
@@ -458,7 +458,7 @@ export default function Profile() {
                         alt="game"
                         id={styles.subscribedGames}
                         onClick={() =>
-                          navigate(`/gamepage?id=${topic.forum_id}`)
+                          navigate(`/games/${topic.forum_id}`)
                         }
                       />
                     </div>

@@ -86,7 +86,7 @@ export default function PrimarySearchAppBar() {
   };
 
   const handleListItemClick = (id) => {
-    navigate(`/gamepage?id=${id}`);
+    navigate(`/games/${id}`);
   };
 
   useEffect(() => {

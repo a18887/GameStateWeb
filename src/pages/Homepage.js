@@ -117,7 +117,7 @@ export default function Homepage() {
     getPopularGames();
     getRecentlyReleasedGames();
     getUpcomingReleasedGames();
-    getRecentlyReviewedGames();
+    //getRecentlyReviewedGames();
   }, []);
 
   useEffect(() => {
@@ -180,22 +180,7 @@ export default function Homepage() {
                 </div>
               ))}
             </Grid>
-            <Grid xs={12} sm={6} md={4}>
-              <h1>Recent Reviews</h1>
-              {recentlyReviewedGames.map((review, index) => (
-                <div className={styles.frame2} key={index}>
-                  <div>
-                    <p
-                      className={styles.text}
-                      onClick={() => navigate(`/games/${review.forum_id}`)}
-                    >
-                      {review.title}
-                    </p>
-                    <p className={styles.date}>{review.createdAt}</p>
-                  </div>
-                </div>
-              ))}
-            </Grid>
+  
           </Grid>
         </div>
       </div>
