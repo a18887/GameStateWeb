@@ -97,6 +97,7 @@ export default function Profile() {
 
   function getSubscribedGames() {
     const id = localStorage.getItem("id");
+    console.log(id)
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `http://localhost:3000/users/${id}/subscribedgames`, true);
     const token = localStorage.getItem("token");
