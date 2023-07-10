@@ -141,7 +141,7 @@ export default function Game() {
     }
     setErrMsg("");
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:3000/reviews", true);
+    xhr.open("POST", "http://localhost:3000/reviews/create", true);
     const token = localStorage.getItem("token");
     xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     xhr.setRequestHeader("Content-Type", "application/json");
